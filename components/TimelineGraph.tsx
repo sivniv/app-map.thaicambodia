@@ -16,7 +16,10 @@ import {
   Brush,
   Area,
   ComposedChart,
-  Bar
+  Bar,
+  ScatterChart,
+  Scatter,
+  Cell
 } from 'recharts'
 
 interface TimelineGraphProps {
@@ -41,6 +44,8 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'facebook' | 'news'>('all')
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | 'all'>('30d')
+  const [selectedDay, setSelectedDay] = useState<ChartDataPoint | null>(null)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     fetchTimelineItems()
@@ -135,30 +140,60 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
     })
   }, [timelineItems, filter, timeRange])
 
+  // Handle dot click
+  const handleDotClick = (data: ChartDataPoint) => {
+    setSelectedDay(data)
+    setShowModal(true)
+  }
+
+  // Custom dot component for timeline
+  const CustomDot = (props: any) => {
+    const { cx, cy, payload } = props
+    if (!payload || payload.totalEvents === 0) return null
+    
+    const size = Math.max(4, Math.min(12, payload.totalEvents * 2))
+    const intensity = payload.conflictIntensity
+    const color = intensity >= 4 ? '#dc2626' : intensity >= 3 ? '#f59e0b' : intensity >= 2 ? '#3b82f6' : '#10b981'
+    
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={size}
+        fill={color}
+        stroke="#fff"
+        strokeWidth={2}
+        className="cursor-pointer hover:opacity-80 transition-opacity"
+        onClick={() => handleDotClick(payload)}
+      />
+    )
+  }
+
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as ChartDataPoint
       return (
-        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-sm">
+        <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-lg max-w-sm cursor-pointer hover:bg-gray-50" 
+             onClick={() => handleDotClick(data)}>
           <p className="font-semibold text-gray-900 mb-2">{format(parseISO(data.date), 'MMMM d, yyyy')}</p>
           <div className="space-y-1 text-sm">
-            <p className="text-blue-600">Conflict Intensity: {data.conflictIntensity}/5</p>
-            <p className="text-green-600">Total Events: {data.totalEvents}</p>
+            <p className="text-red-600">Conflict Intensity: {data.conflictIntensity}/5</p>
+            <p className="text-blue-600">Total Events: {data.totalEvents}</p>
             <p className="text-orange-600">High Priority: {data.highImportanceEvents}</p>
-            <p className="text-blue-500">Facebook: {data.facebookEvents}</p>
+            <p className="text-green-500">Facebook: {data.facebookEvents}</p>
             <p className="text-purple-500">News: {data.newsEvents}</p>
           </div>
           {data.events.length > 0 && (
             <div className="mt-3 pt-2 border-t border-gray-100">
-              <p className="text-xs font-medium text-gray-700 mb-1">Recent Events:</p>
-              {data.events.slice(0, 3).map((event, i) => (
+              <p className="text-xs font-medium text-gray-700 mb-1">Latest Events:</p>
+              {data.events.slice(0, 2).map((event, i) => (
                 <p key={i} className="text-xs text-gray-600 truncate">
                   • {event.title}
                 </p>
               ))}
-              {data.events.length > 3 && (
-                <p className="text-xs text-gray-500">+{data.events.length - 3} more...</p>
+              {data.events.length > 2 && (
+                <p className="text-xs text-blue-500 font-medium">Click to see all {data.events.length} events</p>
               )}
             </div>
           )}
@@ -166,6 +201,74 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
       )
     }
     return null
+  }
+
+  // News Detail Modal
+  const NewsModal = () => {
+    if (!showModal || !selectedDay) return null
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowModal(false)}>
+        <div className="bg-white rounded-lg max-w-4xl max-h-[80vh] w-full mx-4 overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {format(parseISO(selectedDay.date), 'MMMM d, yyyy')}
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  {selectedDay.totalEvents} events • Intensity: {selectedDay.conflictIntensity}/5
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-6 overflow-y-auto max-h-[60vh]">
+            {selectedDay.events.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">No events recorded for this day</p>
+            ) : (
+              <div className="space-y-4">
+                {selectedDay.events.map((event, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold text-gray-900 flex-1">{event.title}</h3>
+                      <div className="flex items-center space-x-2 ml-4">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          event.eventType === 'facebook_post' 
+                            ? 'bg-blue-100 text-blue-800' 
+                            : 'bg-green-100 text-green-800'
+                        }`}>
+                          {event.eventType === 'facebook_post' ? 'Facebook' : 'News'}
+                        </span>
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          event.importance >= 4 
+                            ? 'bg-red-100 text-red-800' 
+                            : event.importance >= 3 
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          Priority {event.importance}/5
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 text-sm mb-2">{event.description}</p>
+                    <p className="text-xs text-gray-500">
+                      {format(new Date(event.eventDate), 'h:mm a')}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (loading) {
@@ -179,7 +282,12 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
   return (
     <div className={className}>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Conflict Timeline</h2>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-900">Conflict Timeline</h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Click on any dot to see detailed news for that day • Dot size = number of events • Color = intensity level
+          </p>
+        </div>
         <div className="flex space-x-4">
           {/* Time Range Filter */}
           <div className="flex space-x-1">
@@ -251,9 +359,14 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
                 type="monotone"
                 dataKey="conflictIntensity"
                 stroke="#dc2626"
-                strokeWidth={3}
-                dot={{ fill: '#dc2626', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, stroke: '#dc2626', strokeWidth: 2 }}
+                strokeWidth={2}
+                dot={<CustomDot />}
+                activeDot={{ 
+                  r: 8, 
+                  stroke: '#dc2626', 
+                  strokeWidth: 3,
+                  cursor: 'pointer'
+                }}
                 connectNulls={false}
               />
               
@@ -284,6 +397,28 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* Color Legend */}
+      <div className="mt-4 flex justify-center">
+        <div className="flex items-center space-x-6 text-sm text-gray-600 bg-gray-50 px-4 py-2 rounded-lg">
+          <span className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-red-600 mr-2"></div>
+            High Alert (4-5)
+          </span>
+          <span className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+            Moderate (3)
+          </span>
+          <span className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+            Low (2)
+          </span>
+          <span className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+            Minimal (0-1)
+          </span>
+        </div>
+      </div>
 
       {/* Summary Stats */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -319,6 +454,9 @@ export default function TimelineGraph({ className = '', sourceId, sourceName }: 
           </div>
         ))}
       </div>
+
+      {/* News Detail Modal */}
+      <NewsModal />
     </div>
   )
 }
