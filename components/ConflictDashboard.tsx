@@ -29,9 +29,10 @@ interface ConflictStats {
 
 interface ConflictDashboardProps {
   className?: string
+  isAdmin?: boolean
 }
 
-export default function ConflictDashboard({ className = '' }: ConflictDashboardProps) {
+export default function ConflictDashboard({ className = '', isAdmin = false }: ConflictDashboardProps) {
   const [stats, setStats] = useState<ConflictStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [todaySummary, setTodaySummary] = useState<string>('')
@@ -150,35 +151,37 @@ export default function ConflictDashboard({ className = '' }: ConflictDashboardP
               <span>Updates every 12 hours</span>
             </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={triggerOpenAIUpdate}
-              disabled={updating}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                updating 
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                  : 'bg-indigo-600 text-white hover:bg-indigo-700'
-              }`}
-            >
-              {updating ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Updating...</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span>Update Now</span>
-                </div>
-              )}
-            </button>
-            <div className="text-xs text-gray-500 text-right">
-              <div>🤖 Powered by</div>
-              <div className="font-semibold">ChatGPT-4</div>
+          {isAdmin && (
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={triggerOpenAIUpdate}
+                disabled={updating}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                  updating 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                }`}
+              >
+                {updating ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Updating...</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Update Now</span>
+                  </div>
+                )}
+              </button>
+              <div className="text-xs text-gray-500 text-right">
+                <div>🤖 Powered by</div>
+                <div className="font-semibold">ChatGPT-4</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
