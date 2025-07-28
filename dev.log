@@ -1,0 +1,1414 @@
+
+> news-ai-agent@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.1.8
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.48.158:3000
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · typedRoutes
+
+ ✓ Starting...
+ ✓ Ready in 1542ms
+ ○ Compiling /admin ...
+ ✓ Compiled /admin in 3.8s (693 modules)
+ GET /admin 200 in 4300ms
+ ✓ Compiled in 594ms (342 modules)
+ GET /admin 200 in 134ms
+ ○ Compiling /api/admin/sources ...
+ ✓ Compiled /api/admin/sources in 1134ms (701 modules)
+ GET /admin 200 in 73ms
+ GET /api/admin/logs 200 in 1700ms
+ GET /api/admin/sources 200 in 1702ms
+ GET /api/admin/logs 200 in 547ms
+ GET /api/admin/sources 200 in 572ms
+ ✓ Compiled /api/monitor/official-pages in 383ms (965 modules)
+testConnection failed (attempt 1): Request failed with status code 429
+Retrying testConnection in 1000ms...
+testConnection failed (attempt 2): Request failed with status code 429
+Retrying testConnection in 2000ms...
+ ✓ Compiled /api/monitor/facebook in 205ms (967 modules)
+testConnection failed (attempt 1): Request failed with status code 429
+Retrying testConnection in 1000ms...
+testConnection failed (attempt 3): Request failed with status code 429
+testConnection failed after 3 attempts
+RapidAPI connection test failed: Error [AxiosError]: Request failed with status code 429
+    at async eval (lib/facebook.ts:262:25)
+    at async FacebookMonitor.retryRequest (lib/facebook.ts:166:13)
+    at async FacebookMonitor.testConnection (lib/facebook.ts:260:6)
+    at async POST (app/api/monitor/official-pages/route.ts:27:27)
+  260 |       await this.retryRequest(async () => {
+  261 |         // Test with a known public page (Facebook's own page)
+> 262 |         const response = await axios.get(`${RAPIDAPI_BASE}/page/posts`, {
+      |                         ^
+  263 |           params: {
+  264 |             page_id: '111975152184324', // Facebook page ID
+  265 |             limit: 1, {
+  code: 'ERR_BAD_REQUEST',
+  config: [Object],
+  request: [ClientRequest],
+  response: [Object],
+  status: 429,
+  constructor: [Function],
+  toJSON: [Function: toJSON]
+}
+Official pages monitoring error: Error: RapidAPI connection test failed
+    at POST (app/api/monitor/official-pages/route.ts:29:12)
+  27 |     const connectionTest = await facebookMonitor.testConnection()
+  28 |     if (!connectionTest) {
+> 29 |       throw new Error('RapidAPI connection test failed')
+     |            ^
+  30 |     }
+  31 |
+  32 |     for (const page of ALL_MONITORED_PAGES) {
+ POST /api/monitor/official-pages 500 in 4439ms
+testConnection failed (attempt 2): Request failed with status code 429
+Retrying testConnection in 2000ms...
+testConnection failed (attempt 3): Request failed with status code 429
+testConnection failed after 3 attempts
+RapidAPI connection test failed: Error [AxiosError]: Request failed with status code 429
+    at async eval (lib/facebook.ts:262:25)
+    at async FacebookMonitor.retryRequest (lib/facebook.ts:166:13)
+    at async FacebookMonitor.testConnection (lib/facebook.ts:260:6)
+    at async POST (app/api/monitor/facebook/route.ts:26:27)
+  260 |       await this.retryRequest(async () => {
+  261 |         // Test with a known public page (Facebook's own page)
+> 262 |         const response = await axios.get(`${RAPIDAPI_BASE}/page/posts`, {
+      |                         ^
+  263 |           params: {
+  264 |             page_id: '111975152184324', // Facebook page ID
+  265 |             limit: 1, {
+  code: 'ERR_BAD_REQUEST',
+  config: [Object],
+  request: [ClientRequest],
+  response: [Object],
+  status: 429,
+  constructor: [Function],
+  toJSON: [Function: toJSON]
+}
+Facebook monitoring error: Error: RapidAPI connection test failed
+    at POST (app/api/monitor/facebook/route.ts:28:12)
+  26 |     const connectionTest = await facebookMonitor.testConnection()
+  27 |     if (!connectionTest) {
+> 28 |       throw new Error('RapidAPI connection test failed')
+     |            ^
+  29 |     }
+  30 |
+  31 |     for (const query of FACEBOOK_SEARCH_QUERIES) {
+ POST /api/monitor/facebook 500 in 4016ms
+ ✓ Compiled /api/analytics/daily-summary in 127ms (969 modules)
+🔄 Starting daily conflict analytics generation...
+Error generating daily analytics: Error [PrismaClientValidationError]: 
+Invalid `prisma.conflictAnalytics.upsert()` invocation:
+
+{
+  where: {
+    date: new Date("2025-07-27T17:00:00.000Z")
+  },
+  update: {
+    thailandCasualties: 40,
+    cambodiaCasualties: "1UNKNOWN",
+    totalCasualties: "401UNKNOWN",
+    affectedPopulation: "130000UNKNOWN",
+    displacedCivilians: 0,
+    affectedAreas: [
+      "Thailand",
+      "Cambodia",
+      "UNKNOWN"
+    ],
+    weaponTypesReported: [
+      "heavy artillery",
+      "rocket launcher",
+      "F-16",
+      "heavy weapons"
+    ],
+    economicLoss: null,
+    tradeDisruption: true,
+    officialStatements: "5UNKNOWN",
+    diplomaticTension: 8,
+    dailySummary: "**EXECUTIVE SUMMARY**\nThe ongoing military clashes between Thailand and Cambodia have escalated, resulting in significant casualties and mass displacement. The conflict has reignited territorial disputes, with both nations preparing for diplomatic discussions. The U.S. President is seeking a ceasefire, but both nations express conflicting positions on the conflict's initiation and resolution.\n\n**KEY DEVELOPMENTS**\n- Military clashes have escalated between Thailand and Cambodia.\n- U.S. President Trump has called for a ceasefire.\n- Former Cambodian Prime Minister Hun Sen has asserted his leadership amidst the crisis.\n- Both nations are preparing for diplomatic discussions.\n\n**CASUALTY UPDATE**\n- There have been 27 verified casualties: 26 from Thailand and 1 from Cambodia. \n- Additional casualties from Thailand have been reported but not yet verified.\n\n**MILITARY ACTIVITY**\n- Heavy artillery, rocket launchers, and F-16 aircraft have been actively used in the conflict.\n- The conflict has resulted in significant infrastructure damage.\n\n**DIPLOMATIC STATUS**\n- High tension level (8/10) with several statements made but no meetings yet.\n- U.S. President Trump is seeking a ceasefire.\n\n**POPULATION IMPACT**\n- Approximately 130,000 people have been displaced due to the conflict.\n- Trade disruption and border closure have significantly impacted both nations' economies.\n\n**RISK ASSESSMENT**\n- The current threat level is high (8/10), with the potential for further escalation if diplomatic discussions fail.\n\n**OUTLOOK**\n- Watch for the outcome of the diplomatic discussions between Thailand and Cambodia.\n- Monitor the U.S. involvement and potential for a ceasefire.\n- Assess the humanitarian impact of the ongoing conflict and displacement.",
+    riskAssessment: 8,
+    sourcesAnalyzed: 2,
+    verificationLevel: "PARTIAL"
+  },
+  create: {
+    date: new Date("2025-07-27T17:00:00.000Z"),
+    thailandCasualties: 40,
+    cambodiaCasualties: "1UNKNOWN",
+                        ~~~~~~~~~~
+    totalCasualties: "401UNKNOWN",
+    affectedPopulation: "130000UNKNOWN",
+    displacedCivilians: 0,
+    affectedAreas: [
+      "Thailand",
+      "Cambodia",
+      "UNKNOWN"
+    ],
+    weaponTypesReported: [
+      "heavy artillery",
+      "rocket launcher",
+      "F-16",
+      "heavy weapons"
+    ],
+    economicLoss: null,
+    tradeDisruption: true,
+    officialStatements: "5UNKNOWN",
+    diplomaticTension: 8,
+    dailySummary: "**EXECUTIVE SUMMARY**\nThe ongoing military clashes between Thailand and Cambodia have escalated, resulting in significant casualties and mass displacement. The conflict has reignited territorial disputes, with both nations preparing for diplomatic discussions. The U.S. President is seeking a ceasefire, but both nations express conflicting positions on the conflict's initiation and resolution.\n\n**KEY DEVELOPMENTS**\n- Military clashes have escalated between Thailand and Cambodia.\n- U.S. President Trump has called for a ceasefire.\n- Former Cambodian Prime Minister Hun Sen has asserted his leadership amidst the crisis.\n- Both nations are preparing for diplomatic discussions.\n\n**CASUALTY UPDATE**\n- There have been 27 verified casualties: 26 from Thailand and 1 from Cambodia. \n- Additional casualties from Thailand have been reported but not yet verified.\n\n**MILITARY ACTIVITY**\n- Heavy artillery, rocket launchers, and F-16 aircraft have been actively used in the conflict.\n- The conflict has resulted in significant infrastructure damage.\n\n**DIPLOMATIC STATUS**\n- High tension level (8/10) with several statements made but no meetings yet.\n- U.S. President Trump is seeking a ceasefire.\n\n**POPULATION IMPACT**\n- Approximately 130,000 people have been displaced due to the conflict.\n- Trade disruption and border closure have significantly impacted both nations' economies.\n\n**RISK ASSESSMENT**\n- The current threat level is high (8/10), with the potential for further escalation if diplomatic discussions fail.\n\n**OUTLOOK**\n- Watch for the outcome of the diplomatic discussions between Thailand and Cambodia.\n- Monitor the U.S. involvement and potential for a ceasefire.\n- Assess the humanitarian impact of the ongoing conflict and displacement.",
+    riskAssessment: 8,
+    sourcesAnalyzed: 2,
+    verificationLevel: "PARTIAL"
+  }
+}
+
+Argument `cambodiaCasualties`: Invalid value provided. Expected Int, provided String.
+    at async generateOrUpdateDailyAnalytics (lib/conflict-analytics.ts:392:22)
+    at async POST (app/api/analytics/daily-summary/route.ts:11:22)
+  390 |
+  391 |     // Create or update daily analytics
+> 392 |     const analytics = await prisma.conflictAnalytics.upsert({
+      |                      ^
+  393 |       where: { date: startOfDay },
+  394 |       update: {
+  395 |         thailandCasualties, {
+  clientVersion: '5.22.0'
+}
+❌ Daily analytics generation failed: Error [PrismaClientValidationError]: 
+Invalid `prisma.conflictAnalytics.upsert()` invocation:
+
+{
+  where: {
+    date: new Date("2025-07-27T17:00:00.000Z")
+  },
+  update: {
+    thailandCasualties: 40,
+    cambodiaCasualties: "1UNKNOWN",
+    totalCasualties: "401UNKNOWN",
+    affectedPopulation: "130000UNKNOWN",
+    displacedCivilians: 0,
+    affectedAreas: [
+      "Thailand",
+      "Cambodia",
+      "UNKNOWN"
+    ],
+    weaponTypesReported: [
+      "heavy artillery",
+      "rocket launcher",
+      "F-16",
+      "heavy weapons"
+    ],
+    economicLoss: null,
+    tradeDisruption: true,
+    officialStatements: "5UNKNOWN",
+    diplomaticTension: 8,
+    dailySummary: "**EXECUTIVE SUMMARY**\nThe ongoing military clashes between Thailand and Cambodia have escalated, resulting in significant casualties and mass displacement. The conflict has reignited territorial disputes, with both nations preparing for diplomatic discussions. The U.S. President is seeking a ceasefire, but both nations express conflicting positions on the conflict's initiation and resolution.\n\n**KEY DEVELOPMENTS**\n- Military clashes have escalated between Thailand and Cambodia.\n- U.S. President Trump has called for a ceasefire.\n- Former Cambodian Prime Minister Hun Sen has asserted his leadership amidst the crisis.\n- Both nations are preparing for diplomatic discussions.\n\n**CASUALTY UPDATE**\n- There have been 27 verified casualties: 26 from Thailand and 1 from Cambodia. \n- Additional casualties from Thailand have been reported but not yet verified.\n\n**MILITARY ACTIVITY**\n- Heavy artillery, rocket launchers, and F-16 aircraft have been actively used in the conflict.\n- The conflict has resulted in significant infrastructure damage.\n\n**DIPLOMATIC STATUS**\n- High tension level (8/10) with several statements made but no meetings yet.\n- U.S. President Trump is seeking a ceasefire.\n\n**POPULATION IMPACT**\n- Approximately 130,000 people have been displaced due to the conflict.\n- Trade disruption and border closure have significantly impacted both nations' economies.\n\n**RISK ASSESSMENT**\n- The current threat level is high (8/10), with the potential for further escalation if diplomatic discussions fail.\n\n**OUTLOOK**\n- Watch for the outcome of the diplomatic discussions between Thailand and Cambodia.\n- Monitor the U.S. involvement and potential for a ceasefire.\n- Assess the humanitarian impact of the ongoing conflict and displacement.",
+    riskAssessment: 8,
+    sourcesAnalyzed: 2,
+    verificationLevel: "PARTIAL"
+  },
+  create: {
+    date: new Date("2025-07-27T17:00:00.000Z"),
+    thailandCasualties: 40,
+    cambodiaCasualties: "1UNKNOWN",
+                        ~~~~~~~~~~
+    totalCasualties: "401UNKNOWN",
+    affectedPopulation: "130000UNKNOWN",
+    displacedCivilians: 0,
+    affectedAreas: [
+      "Thailand",
+      "Cambodia",
+      "UNKNOWN"
+    ],
+    weaponTypesReported: [
+      "heavy artillery",
+      "rocket launcher",
+      "F-16",
+      "heavy weapons"
+    ],
+    economicLoss: null,
+    tradeDisruption: true,
+    officialStatements: "5UNKNOWN",
+    diplomaticTension: 8,
+    dailySummary: "**EXECUTIVE SUMMARY**\nThe ongoing military clashes between Thailand and Cambodia have escalated, resulting in significant casualties and mass displacement. The conflict has reignited territorial disputes, with both nations preparing for diplomatic discussions. The U.S. President is seeking a ceasefire, but both nations express conflicting positions on the conflict's initiation and resolution.\n\n**KEY DEVELOPMENTS**\n- Military clashes have escalated between Thailand and Cambodia.\n- U.S. President Trump has called for a ceasefire.\n- Former Cambodian Prime Minister Hun Sen has asserted his leadership amidst the crisis.\n- Both nations are preparing for diplomatic discussions.\n\n**CASUALTY UPDATE**\n- There have been 27 verified casualties: 26 from Thailand and 1 from Cambodia. \n- Additional casualties from Thailand have been reported but not yet verified.\n\n**MILITARY ACTIVITY**\n- Heavy artillery, rocket launchers, and F-16 aircraft have been actively used in the conflict.\n- The conflict has resulted in significant infrastructure damage.\n\n**DIPLOMATIC STATUS**\n- High tension level (8/10) with several statements made but no meetings yet.\n- U.S. President Trump is seeking a ceasefire.\n\n**POPULATION IMPACT**\n- Approximately 130,000 people have been displaced due to the conflict.\n- Trade disruption and border closure have significantly impacted both nations' economies.\n\n**RISK ASSESSMENT**\n- The current threat level is high (8/10), with the potential for further escalation if diplomatic discussions fail.\n\n**OUTLOOK**\n- Watch for the outcome of the diplomatic discussions between Thailand and Cambodia.\n- Monitor the U.S. involvement and potential for a ceasefire.\n- Assess the humanitarian impact of the ongoing conflict and displacement.",
+    riskAssessment: 8,
+    sourcesAnalyzed: 2,
+    verificationLevel: "PARTIAL"
+  }
+}
+
+Argument `cambodiaCasualties`: Invalid value provided. Expected Int, provided String.
+    at async generateOrUpdateDailyAnalytics (lib/conflict-analytics.ts:392:22)
+    at async POST (app/api/analytics/daily-summary/route.ts:11:22)
+  390 |
+  391 |     // Create or update daily analytics
+> 392 |     const analytics = await prisma.conflictAnalytics.upsert({
+      |                      ^
+  393 |       where: { date: startOfDay },
+  394 |       update: {
+  395 |         thailandCasualties, {
+  clientVersion: '5.22.0'
+}
+ POST /api/analytics/daily-summary 500 in 16858ms
+ ✓ Compiled /_not-found in 305ms (966 modules)
+ GET /api/sources/status 404 in 390ms
+ GET /api/sources/status 404 in 85ms
+ GET /api/sources/status 404 in 18ms
+ GET /api/sources/status 404 in 87ms
+ GET /admin 200 in 584ms
+ ✓ Compiled /api/admin/sources in 498ms (371 modules)
+ ✓ Compiled (373 modules)
+ GET /api/admin/sources 200 in 1305ms
+ GET /api/admin/logs 200 in 1422ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1765ms (1656 modules)
+ GET / 200 in 1981ms
+ ○ Compiling /api/articles ...
+ ✓ Compiled /api/articles in 1975ms (1666 modules)
+ GET /api/sources?withCounts=true&active=true 200 in 2086ms
+ GET /api/articles?limit=5 200 in 2260ms
+ GET /api/stats 200 in 2524ms
+ GET /api/analytics/stats?period=30 200 in 2836ms
+ GET /api/timeline 200 in 2840ms
+ GET /api/timeline 200 in 345ms
+ ✓ Compiled /timeline in 472ms (1672 modules)
+ GET /timeline 200 in 557ms
+ GET /api/sources?withCounts=true&active=true 200 in 357ms
+ GET /api/sources?withCounts=true&active=true 200 in 86ms
+ GET /api/timeline 200 in 708ms
+ GET /api/timeline 200 in 628ms
+ GET / 200 in 46ms
+ GET /api/articles?limit=5 200 in 409ms
+ GET /api/articles?limit=5 200 in 177ms
+ GET /api/timeline 200 in 717ms
+ GET /api/sources?withCounts=true&active=true 200 in 762ms
+ GET /api/stats 200 in 777ms
+ GET /api/sources?withCounts=true&active=true 200 in 80ms
+ GET /api/stats 200 in 84ms
+ GET /api/analytics/stats?period=30 200 in 960ms
+ GET /api/timeline 200 in 298ms
+ GET /api/timeline 200 in 691ms
+ GET /api/analytics/stats?period=30 200 in 919ms
+ GET /api/timeline 200 in 265ms
+ GET /admin 200 in 109ms
+ GET /api/admin/logs 200 in 325ms
+ GET /api/admin/sources 200 in 392ms
+ GET /api/admin/sources 200 in 86ms
+ GET /api/admin/logs 200 in 160ms
+ ✓ Compiled /_not-found in 426ms (866 modules)
+ GET /api/sources/status 404 in 514ms
+ GET /api/sources/status 404 in 46ms
+ GET /api/sources/status 404 in 17ms
+ GET /api/sources/status 404 in 165ms
+ GET /api/sources/status 404 in 60ms
+ GET /api/sources/status 404 in 88ms
+ GET /api/sources/status 404 in 16ms
+ GET /api/sources/status 404 in 45ms
+ GET /api/sources/status 404 in 26ms
+ GET /api/sources/status 404 in 80ms
+ GET /api/sources/status 404 in 32ms
+ GET /api/sources/status 404 in 19ms
+ GET /api/sources/status 404 in 95ms
+ GET / 200 in 233ms
+ GET /api/stats 200 in 1132ms
+ GET /api/sources?withCounts=true&active=true 200 in 1312ms
+ GET /api/articles?limit=5 200 in 1199ms
+ GET /api/analytics/stats?period=30 200 in 1841ms
+ GET /api/timeline 200 in 2125ms
+ GET /api/timeline 200 in 258ms
+ GET /timeline 200 in 50ms
+ GET /api/sources?withCounts=true&active=true 200 in 208ms
+ GET /api/sources?withCounts=true&active=true 200 in 239ms
+ GET /api/timeline 200 in 514ms
+ GET /api/sources/status 404 in 43ms
+ GET /api/sources/status 404 in 14ms
+ GET /api/timeline 200 in 268ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1284ms (1908 modules)
+ GET / 404 in 1742ms
+ GET /admin 404 in 842ms
+ GET / 404 in 212ms
+ GET /admin 404 in 210ms
+ GET / 404 in 210ms
+ GET /admin 404 in 216ms
+ GET / 404 in 212ms
+ ○ Compiling /api/monitor/news ...
+ ✓ Compiled /api/monitor/news in 1935ms (2462 modules)
+Fetched 31 articles from BBC News
+⚠️ Duplicate article detected: Thais and Cambodians slug it out on social media, as border tensions flare
+Fetched 20 articles from Channel News Asia
+Error storing conflict analysis: Error [PrismaClientValidationError]: 
+Invalid `prisma.weaponUsage.create()` invocation:
+
+{
+  data: {
+    articleId: "6887312ba8a73f724f504bde",
+    weaponType: "UNKNOWN",
+    weaponName: "UNKNOWN",
+    country: "UNKNOWN",
+    location: "Thailand-Cambodia border",
+    purpose: "Conflict",
+    threatLevel: "UNKNOWN",
+                 ~~~~~~~~~
+    confidence: 0.5,
+    verificationLevel: "UNVERIFIED"
+  }
+}
+
+Argument `threatLevel`: Invalid value provided. Expected Int, provided String.
+    at async storeConflictAnalysis (lib/conflict-analytics.ts:285:8)
+    at async analyzeContent (lib/openai.ts:81:8)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  283 |     for (const weapon of analysis.weapons) {
+  284 |       if (weapon.type) {
+> 285 |         await prisma.weaponUsage.create({
+      |        ^
+  286 |           data: {
+  287 |             articleId,
+  288 |             weaponType: weapon.type, {
+  clientVersion: '5.22.0'
+}
+Conflict analysis failed, continuing with basic analysis: Error [PrismaClientValidationError]: 
+Invalid `prisma.weaponUsage.create()` invocation:
+
+{
+  data: {
+    articleId: "6887312ba8a73f724f504bde",
+    weaponType: "UNKNOWN",
+    weaponName: "UNKNOWN",
+    country: "UNKNOWN",
+    location: "Thailand-Cambodia border",
+    purpose: "Conflict",
+    threatLevel: "UNKNOWN",
+                 ~~~~~~~~~
+    confidence: 0.5,
+    verificationLevel: "UNVERIFIED"
+  }
+}
+
+Argument `threatLevel`: Invalid value provided. Expected Int, provided String.
+    at async storeConflictAnalysis (lib/conflict-analytics.ts:285:8)
+    at async analyzeContent (lib/openai.ts:81:8)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  283 |     for (const weapon of analysis.weapons) {
+  284 |       if (weapon.type) {
+> 285 |         await prisma.weaponUsage.create({
+      |        ^
+  286 |           data: {
+  287 |             articleId,
+  288 |             weaponType: weapon.type, {
+  clientVersion: '5.22.0'
+}
+Processed relevant article: Talks underway between Cambodian and Thai leaders in Malaysia to end deadly border dispute
+⚠️ Duplicate article detected: Commentary: Trump's call didn’t stop the fighting in Thailand and Cambodia. Can Malaysia do better?
+⚠️ Duplicate article detected: Cambodia says immediate ceasefire purpose of talks; Thailand questions its sincerity
+⚠️ Duplicate article detected: Thais and Cambodians refuse to leave homes on clash frontier
+⚠️ Duplicate article detected: Thailand and Cambodia to hold talks in Malaysia over deadly border conflict
+⚠️ Duplicate article detected: Thailand, Cambodia open to ceasefire talks after Trump intervention
+⚠️ Duplicate article detected: 'We are neighbours': Fleeing Thais and Cambodians call for peace
+⚠️ Duplicate article detected: Trump says Thailand, Cambodia agree to hold immediate ceasefire talks
+Fetched 25 articles from Al Jazeera
+Failed to parse conflict analysis response: Based on the provided content, the JSON analysis would be as follows:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": []
+    },
+    "weapons": {
+      "types": [],
+      "activity": ""
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": false,
+      "borderStatus": "UNKNOWN"
+    },
+    "diplomacy": {
+      "tension": 1,
+      "statements": 1,
+      "meetings": 1
+    },
+    "confidence": 0.5
+  },
+  "casualties": [],
+  "weapons": [],
+  "impacts": [],
+  "summary": "Acting Thai Premier Phumtham Wechayachai accuses Cambodia of 'not acting in good faith' ahead of crucial talks.",
+  "keyDevelopments": ["Thailand, Cambodia hold ceasefire talks in Malaysia after deadly clashes"],
+  "riskAssessment": 1,
+  "overallConfidence": 0.5
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned in the content.
+2. Population: The content does not provide information about affected civilians and displaced persons.
+3. Weapons: The content does not mention specific weapon types or military equipment.
+4. Economy: The content does not provide information about economic impact or border status.
+5. Diplomacy: The tension is rated as 1 (low) based on the content. There is one official statement from the Acting Thai Premier and one meeting (ceasefire talks).
+6. Confidence: The confidence score is set to 0.5 as the source and detail level of the content are not specified.
+7. Risk Assessment: The risk of escalation is rated as 1 (low) based on the content.
+8. The data included is only what is explicitly mentioned in the content.
+9. The country is marked as "UNKNOWN" for border status as it is not clearly specified in the content.
+10. The confidence scores for each extracted item are provided based on the available information.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Thailand, Cambodia hold ceasefire talks in Malaysia after deadly clashes
+Error fetching RSS feed: [Error: getaddrinfo ENOTFOUND feeds.apnews.com] {
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'feeds.apnews.com'
+}
+Fetched 0 articles from Associated Press
+Fetched 50 articles from CNN World
+Error fetching RSS feed: [Error: Status code 404]
+Fetched 0 articles from Voice of America
+Fetched 10 articles from Bangkok Post - Most Recent
+Failed to parse OpenAI response: ```json
+{
+  "summary": "The Thai military has dismissed Cambodia's allegations of chemical weapon use during recent border clashes as unfounded and part of a campaign of disinformation. The statements reflect ongoing tensions between the two nations, particularly regarding military activities and border disputes.",
+  "keywords": ["border disputes", "military activities", "disinformation", "chemical weapons", "diplomatic relations"],
+  "sentiment": "negative",
+  "importance": 4,
+  "conflictRelevance": 8
+}
+```
+OpenAI analysis error: Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+Error processing article "Thai military says Cambodia’s chemical weapons claim part of 'daily lies'": Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+Failed to parse conflict analysis response: Based on the provided content, the JSON format data would be:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": []
+    },
+    "weapons": {
+      "types": [],
+      "activity": "Clashes"
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": false,
+      "borderStatus": "UNKNOWN"
+    },
+    "diplomacy": {
+      "tension": 7,
+      "statements": 1,
+      "meetings": 1
+    },
+    "confidence": 0.6
+  },
+  "casualties": [],
+  "weapons": [],
+  "impacts": [],
+  "summary": "Clashes between Thai and Cambodian forces continued into early Monday morning as their leaders are set for talks Monday to halt the deadliest clash between the neighbours in more than a decade, with the US sending mediators after President Donald Trump used tariffs threats to press for a ceasefire.",
+  "keyDevelopments": [
+    {
+      "description": "Leaders of Thailand and Cambodia are set for peace talks",
+      "date": "UNKNOWN",
+      "confidence": 0.7
+    },
+    {
+      "description": "US sending mediators after President Donald Trump used tariffs threats to press for a ceasefire",
+      "date": "UNKNOWN",
+      "confidence": 0.6
+    }
+  ],
+  "riskAssessment": 7,
+  "overallConfidence": 0.6
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned.
+2. Population: No specific numbers of affected civilians and displaced persons are mentioned.
+3. Weapons: No specific weapon types or military equipment are mentioned.
+4. Economy: No specific economic impact or border status is mentioned.
+5. Diplomacy: The tension is high due to the clashes (rated 7), one official statement is mentioned (tariffs threats by President Donald Trump), and one meeting is mentioned (peace talks).
+6. Confidence: The source seems credible but lacks detail, hence a moderate confidence score of 0.6.
+7. Risk Assessment: The potential for escalation is high due to the ongoing clashes and upcoming peace talks, hence a risk assessment score of 7.
+8. Key Developments: Two key developments are mentioned - the upcoming peace talks and the US sending mediators.
+9. Overall Confidence: The overall confidence is moderate (0.6) due to the lack of detail in the source.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Clashes continue Monday as Thai, Cambodian leaders set for peace talks
+ GET /api/sources/status 404 in 305ms
+ GET /api/sources/status 404 in 207ms
+ POST /api/monitor/news 200 in 115324ms
+ ✓ Compiled in 388ms (882 modules)
+Failed to parse conflict analysis response: Based on the provided content, the following JSON data can be extracted:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": ["Surin", "Buachet", "Kap Choeng", "Phanong Dong Rak", "Sangkha"]
+    },
+    "weapons": {
+      "types": [],
+      "activity": "UNKNOWN"
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": "UNKNOWN",
+      "borderStatus": "Tense"
+    },
+    "diplomacy": {
+      "tension": 7,
+      "statements": 1,
+      "meetings": 0
+    },
+    "confidence": 0.6
+  },
+  "casualties": [
+    {
+      "location": "UNKNOWN",
+      "date": "UNKNOWN",
+      "country": "UNKNOWN",
+      "casualties": 0,
+      "injured": 0,
+      "cause": "UNKNOWN",
+      "confidence": 0.0
+    }
+  ],
+  "weapons": [
+    {
+      "type": "UNKNOWN",
+      "name": "UNKNOWN",
+      "country": "UNKNOWN",
+      "location": "UNKNOWN",
+      "purpose": "UNKNOWN",
+      "threatLevel": 1,
+      "confidence": 0.0
+    }
+  ],
+  "impacts": [
+    {
+      "location": "Surin",
+      "country": "THAILAND",
+      "type": "UNKNOWN",
+      "affected": 0,
+      "severity": 1,
+      "description": "People advised to avoid crowded areas within a 120km radius of the border",
+      "confidence": 0.6
+    }
+  ],
+  "summary": "Authorities have warned people in the northeastern province of Surin to avoid crowded areas within a 120-kilometre range of the border with Cambodia for their safety due to escalating border tensions.",
+  "keyDevelopments": [],
+  "riskAssessment": 7,
+  "overallConfidence": 0.6
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned.
+2. Population: No specific numbers of affected civilians and displaced persons are mentioned, but several areas are identified.
+3. Weapons: No specific weapon types or military equipment are mentioned.
+4. Economy: No specific economic impact is mentioned, but the border status is described as tense.
+5. Diplomacy: Tension is rated as 7 due to the warning issued by authorities. One official statement is mentioned.
+6. Confidence: Rated as 0.6 based on the source being an online reporter and the detail level of the content.
+7. Risk Assessment: Rated as 7 due to the escalating border tensions.
+8. All data is explicitly mentioned in the content.
+9. "UNKNOWN" is used for country and other details not clearly specified.
+10. Confidence scores are provided for each extracted item.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Surin people warned of risks within 120km of Cambodian border
+Failed to parse OpenAI response: ```json
+{
+  "summary": "The Sai River overflowed in northern Thailand, particularly affecting communities in the Mae Sai district, leading to evacuations due to heavy rainfall. Local authorities are on alert for further flooding as they assist residents in flood-prone areas.",
+  "keywords": ["flooding", "Mae Sai", "evacuation", "heavy rain", "Chiang Rai"],
+  "sentiment": "neutral",
+  "importance": 2,
+  "conflictRelevance": 1
+}
+```
+OpenAI analysis error: Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+Error processing article "Sai River overflows, floods communities in northern Thailand": Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+ GET / 404 in 277ms
+Failed to parse conflict analysis response: Based on the provided content, the following JSON data can be extracted:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": ["Surin province"]
+    },
+    "weapons": {
+      "types": ["long-range weapons"],
+      "activity": "used by Cambodian soldiers to fire into Thailand"
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": false,
+      "borderStatus": "Conflict"
+    },
+    "diplomacy": {
+      "tension": 7,
+      "statements": 1,
+      "meetings": 0
+    },
+    "confidence": 0.7
+  },
+  "casualties": [
+    {
+      "location": "Surin province",
+      "date": "UNKNOWN",
+      "country": "UNKNOWN",
+      "casualties": 0,
+      "injured": 0,
+      "cause": "Conflict",
+      "confidence": 0.7
+    }
+  ],
+  "weapons": [
+    {
+      "type": "long-range weapons",
+      "name": "UNKNOWN",
+      "country": "CAMBODIA",
+      "location": "Surin province",
+      "purpose": "fire into Thailand",
+      "threatLevel": 7,
+      "confidence": 0.7
+    }
+  ],
+  "impacts": [
+    {
+      "location": "Surin province",
+      "country": "THAILAND",
+      "type": "BORDER_CLOSURE",
+      "affected": 0,
+      "severity": 7,
+      "description": "Thai army defended a strike on a building in Cambodia near the border",
+      "confidence": 0.7
+    }
+  ],
+  "summary": "The Royal Thai Army defended a strike on a building in Cambodia near the border in Surin province, saying the structure was used by Cambodian soldiers to fire long-range weapons into Thailand.",
+  "keyDevelopments": ["Thai army strike on a building in Cambodia"],
+  "riskAssessment": 7,
+  "overallConfidence": 0.7
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned.
+2. Population: No specific numbers of affected civilians and displaced persons are mentioned. However, the conflict occurred in Surin province.
+3. Weapons: The content mentions the use of long-range weapons by Cambodian soldiers.
+4. Economy: No specific economic impact is mentioned. However, the border status can be inferred as conflict.
+5. Diplomacy: The tension can be rated as 7 due to the conflict. One statement from the Thai army is mentioned.
+6. Confidence: The confidence score is set to 0.7 based on the source credibility and detail level.
+7. Risk Assessment: The risk assessment is rated as 7 based on the potential for escalation.
+8. The data included is explicitly mentioned in the content.
+9. The country is specified where possible.
+10. Confidence scores are provided for each extracted item.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Thai army hits building on Cambodia border used as artillery base
+Fetched 10 articles from Bangkok Post - Top Stories
+⚠️ Duplicate article detected: Thai military says Cambodia’s chemical weapons claim part of 'daily lies'
+⚠️ Duplicate article detected: Clashes continue Monday as Thai, Cambodian leaders set for peace talks
+⚠️ Duplicate article detected: Sai River overflows, floods communities in northern Thailand
+Failed to parse conflict analysis response: Based on the provided content, the following JSON data can be extracted:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": true
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": []
+    },
+    "weapons": {
+      "types": [],
+      "activity": "UNKNOWN"
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": true,
+      "borderStatus": "UNKNOWN"
+    },
+    "diplomacy": {
+      "tension": 7,
+      "statements": 1,
+      "meetings": 1
+    },
+    "confidence": 0.7
+  },
+  "casualties": [],
+  "weapons": [],
+  "impacts": [
+    {
+      "location": "UNKNOWN",
+      "country": "THAILAND|CAMBODIA",
+      "type": "TRADE_DISRUPTION",
+      "affected": 0,
+      "severity": 1,
+      "description": "Threat of tariffs used to press for a ceasefire",
+      "confidence": 0.7
+    }
+  ],
+  "summary": "Thai and Cambodian leaders are set to hold talks to end the deadliest clash between the two nations in over a decade. The peace initiative is driven by US President Donald Trump, who used the threat of tariffs to press for a ceasefire.",
+  "keyDevelopments": [
+    {
+      "description": "Peace talks scheduled between Thai and Cambodian leaders",
+      "date": "UNKNOWN",
+      "confidence": 0.7
+    }
+  ],
+  "riskAssessment": 5,
+  "overallConfidence": 0.7
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned in the content.
+2. Population: The content does not provide information on affected civilians and displaced persons.
+3. Weapons: The content does not mention specific weapon types or military equipment.
+4. Economy: The threat of tariffs implies potential trade disruption, but no specific economic loss or border status is mentioned.
+5. Diplomacy: The scheduled peace talks and the involvement of the US President suggest a high level of tension (rated 7). One official statement (the announcement of the talks) and one meeting (the talks themselves) are mentioned.
+6. Confidence: The source seems credible and provides some detail, but lacks specifics in several areas, hence a confidence score of 0.7.
+7. Risk Assessment: The potential for escalation is moderate, given the scheduled talks and the involvement of the US President, hence a risk assessment score of 5.
+8. The extracted data is based only on the information explicitly mentioned in the content.
+9. The country is clearly specified in the content.
+10. Confidence scores are provided for each extracted item.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Thai, Cambodian leaders set for peace talks at 3pm in KL
+Failed to parse conflict analysis response: Based on the provided content, the JSON data would be as follows:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": []
+    },
+    "weapons": {
+      "types": [],
+      "activity": ""
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": true,
+      "borderStatus": "UNKNOWN"
+    },
+    "diplomacy": {
+      "tension": 1,
+      "statements": 1,
+      "meetings": 0
+    },
+    "confidence": 0.5
+  },
+  "casualties": [],
+  "weapons": [],
+  "impacts": [
+    {
+      "location": "UNKNOWN",
+      "country": "THAILAND|CAMBODIA|UNKNOWN",
+      "type": "TRADE_DISRUPTION",
+      "affected": 0,
+      "severity": 1,
+      "description": "Reports of the United States using trade negotiations as leverage to pressure Thailand into ending hostilities with Cambodia.",
+      "confidence": 0.5
+    }
+  ],
+  "summary": "The Senate Committee on military and national security has expressed concern over reports the United States may be using trade negotiations as leverage to pressure Thailand into ending hostilities with Cambodia.",
+  "keyDevelopments": [],
+  "riskAssessment": 1,
+  "overallConfidence": 0.5
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country were mentioned in the content.
+2. Population: No information about affected civilians and displaced persons was provided.
+3. Weapons: No specific weapon types or military equipment were mentioned.
+4. Economy: The content suggests a potential trade disruption between the United States and Thailand, but no specific economic loss or border status was mentioned.
+5. Diplomacy: The tension is rated as 1 (low) based on the content. One official statement was made by the Senate Committee on military and national security.
+6. Confidence: The confidence score is set to 0.5 as the source of the information is not clearly specified.
+7. Risk Assessment: The risk assessment is rated as 1 (low) as the content does not suggest any immediate escalation potential.
+8. The data included is only what was explicitly mentioned in the content.
+9. The country is marked as "UNKNOWN" where it is not clearly specified.
+10. Confidence scores are provided for each extracted item.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Concern at Trump's trade deal threats
+ GET /api/sources/status 404 in 253ms
+ GET /api/sources/status 404 in 220ms
+ GET /admin 404 in 245ms
+Error fetching RSS feed: [Error: Request timed out after 60000ms]
+Fetched 0 articles from Bangkok Post - Thailand News
+ GET /admin 404 in 46ms
+ GET /admin 404 in 27ms
+ GET /admin 404 in 5ms
+ GET /admin 404 in 29ms
+ GET /admin 404 in 7ms
+ GET /admin 404 in 17ms
+ GET /admin 404 in 10ms
+ GET /admin 404 in 9ms
+Error fetching RSS feed: [Error: Status code 504]
+Fetched 0 articles from Bangkok Post - Business
+ GET / 404 in 13ms
+ GET / 404 in 6ms
+ GET / 404 in 193ms
+ GET / 404 in 6ms
+ GET / 404 in 38ms
+ GET / 404 in 41ms
+ GET / 404 in 6ms
+ GET / 404 in 7ms
+ GET / 404 in 11ms
+ GET / 404 in 9ms
+ GET / 404 in 5ms
+ GET / 404 in 5ms
+ GET / 404 in 21ms
+Error fetching RSS feed: [Error: Status code 504]
+Fetched 0 articles from Bangkok Post - World News
+Error fetching RSS feed: [Error: Status code 403]
+Fetched 0 articles from The Nation Thailand
+ GET / 404 in 7ms
+Fetched 10 articles from The Thaiger
+ GET / 404 in 12ms
+ GET / 404 in 7ms
+ GET / 404 in 13ms
+ GET / 404 in 80ms
+ GET / 404 in 13ms
+ GET / 404 in 4ms
+ GET / 404 in 7ms
+ GET / 404 in 6ms
+ GET / 404 in 15ms
+ GET / 404 in 10ms
+ GET / 404 in 6ms
+ GET / 404 in 7ms
+ GET / 404 in 34ms
+ GET / 404 in 216ms
+ GET / 404 in 12ms
+ GET / 404 in 66ms
+ GET / 404 in 15ms
+ GET / 404 in 7ms
+ GET / 404 in 8ms
+ GET / 404 in 10ms
+ GET / 404 in 7ms
+ GET / 404 in 7ms
+ GET / 404 in 6ms
+ GET / 404 in 4ms
+ GET / 404 in 5ms
+ GET / 404 in 7ms
+ GET / 404 in 4ms
+✅ Stored conflict analysis for article 68873284a8a73f724f504bf6
+✅ Enhanced conflict analysis completed for article 68873284a8a73f724f504bf6
+Processed relevant article: Buriram evacuates residents amid renewed hostilities near Thai-Cambodian border
+ GET / 404 in 7ms
+ GET / 404 in 7ms
+ GET / 404 in 5ms
+ GET / 404 in 11ms
+ GET / 404 in 21ms
+ GET / 404 in 7ms
+ GET / 404 in 5ms
+ GET / 404 in 6ms
+ GET / 404 in 6ms
+ GET / 404 in 6ms
+ GET / 404 in 9ms
+ GET / 404 in 37ms
+ GET / 404 in 8ms
+ GET / 404 in 7ms
+ GET / 404 in 12ms
+ GET / 404 in 10ms
+ GET / 404 in 13ms
+ GET / 404 in 11ms
+✅ Stored conflict analysis for article 688732a7a8a73f724f504bfa
+✅ Enhanced conflict analysis completed for article 688732a7a8a73f724f504bfa
+Processed relevant article: Cambodian rocket attack on Sisaket kills one, injures another
+ GET / 404 in 9ms
+ GET / 404 in 9ms
+Processed relevant article: Thai officials to attend ASEAN peace talks in Kuala Lumpur
+Fetched 10 articles from The Thaiger - Business
+ GET / 404 in 8ms
+ GET / 404 in 5ms
+ GET / 404 in 31ms
+ GET / 404 in 9ms
+ GET / 404 in 5ms
+ GET / 404 in 8ms
+ GET / 404 in 8ms
+ GET / 404 in 8ms
+ GET / 404 in 7ms
+ GET / 404 in 10ms
+Fetched 10 articles from The Pattaya News
+ GET / 404 in 9ms
+ GET / 404 in 10ms
+ GET / 404 in 8ms
+ GET / 404 in 10ms
+ GET / 404 in 9ms
+ GET / 404 in 9ms
+ GET / 404 in 8ms
+ GET / 404 in 9ms
+ GET / 404 in 8ms
+ GET / 404 in 10ms
+ GET / 404 in 9ms
+ GET / 404 in 9ms
+ GET / 404 in 8ms
+ GET / 404 in 12ms
+Failed to parse conflict analysis response: Based on the provided content, the following JSON data can be extracted:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": ["Ubon Ratchathani", "Sisaket"]
+    },
+    "weapons": {
+      "types": [],
+      "activity": "UNKNOWN"
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": false,
+      "borderStatus": "UNKNOWN"
+    },
+    "diplomacy": {
+      "tension": 1,
+      "statements": 1,
+      "meetings": 1
+    },
+    "confidence": 0.5
+  },
+  "casualties": [
+    {
+      "location": "Thai-Cambodian border",
+      "date": "2025-07-27",
+      "country": "THAILAND",
+      "casualties": 0,
+      "injured": "UNKNOWN",
+      "cause": "Border clashes",
+      "confidence": 0.5
+    }
+  ],
+  "weapons": [],
+  "impacts": [],
+  "summary": "On July 27, 2025, Police General Kittirat Phanphet, the National Police Chief of Thailand, visited Ubon Ratchathani and Sisaket provinces to offer support to police officers and soldiers injured in recent clashes along the Thai-Cambodian border.",
+  "keyDevelopments": ["Visit of Thai National Police Chief to injured officers and soldiers"],
+  "riskAssessment": 1,
+  "overallConfidence": 0.5
+}
+```
+
+EXPLANATION:
+1. Casualties: No specific numbers for deaths/injuries per country are mentioned in the content.
+2. Population: No specific numbers of affected civilians and displaced persons are mentioned. However, the areas affected are Ubon Ratchathani and Sisaket provinces.
+3. Weapons: No specific weapon types or military equipment are mentioned.
+4. Economy: No specific economic impact or border status is mentioned.
+5. Diplomacy: The tension is assumed to be low (1) as no major conflict is described. One official statement (the visit of the Police Chief) and one meeting (with the injured officers and medical personnel) are mentioned.
+6. Confidence: The source seems credible but the detail level is low, hence a confidence score of 0.5.
+7. Risk Assessment: The potential for escalation is not clear from the content, hence a low risk assessment score of 1.
+8. The country involved in the conflict is clearly specified as Thailand.
+9. Confidence scores are provided for each extracted item based on the detail level and source credibility.
+10. The extraction is factual and precise, with uncertain data marked with low confidence scores.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Processed relevant article: Thai National Police Chief Visits Injured Officers and Soldiers in Border Clashes, Expresses Gratitude for Royal Support
+ GET / 404 in 104ms
+ GET / 404 in 34ms
+ GET / 404 in 3ms
+ GET / 404 in 8ms
+ GET / 404 in 4ms
+ GET / 404 in 6ms
+ GET / 404 in 9ms
+ GET / 404 in 11ms
+ GET / 404 in 7ms
+ GET / 404 in 9ms
+ GET / 404 in 32ms
+ GET / 404 in 8ms
+ GET / 404 in 25ms
+ GET / 404 in 6ms
+ GET / 404 in 7ms
+ GET / 404 in 10ms
+ GET / 404 in 7ms
+ GET / 404 in 6ms
+✅ Stored conflict analysis for article 688732fca8a73f724f504c09
+✅ Enhanced conflict analysis completed for article 688732fca8a73f724f504c09
+Processed relevant article: Royal Thai Army Condemns Cambodia for BM-21 Rocket Attack on Civilian Area in Sisaket
+ GET / 404 in 6ms
+Failed to parse OpenAI response: ```json
+{
+  "summary": "The Thai government has reported significant casualties and evacuations due to ongoing clashes along the Thai-Cambodian border, highlighting the severity of the conflict. The incident has affected numerous civilians and military personnel, prompting intensified relief efforts.",
+  "keywords": ["border clash", "casualties", "evacuations", "Thai government", "Cambodia"],
+  "sentiment": "negative",
+  "importance": 5,
+  "conflictRelevance": 9
+}
+```
+OpenAI analysis error: Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+Error processing article "Thai-Cambodian Border Clash: Thai Government Issues List of Deaths, Injuries, Evacuations": Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+ GET / 404 in 9ms
+ GET / 404 in 7ms
+Failed to parse OpenAI response: ```json
+{
+  "summary": "US Secretary of State Marco Rubio has urged Thailand and Cambodia to de-escalate tensions and agree to a ceasefire regarding their ongoing border dispute. The United States is prepared to facilitate diplomatic discussions to maintain peace between the two nations.",
+  "keywords": ["border dispute", "diplomatic talks", "ceasefire"],
+  "sentiment": "positive",
+  "importance": 4,
+  "conflictRelevance": 8
+}
+```
+OpenAI analysis error: Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+Error processing article "US Secretary of State Urges Thailand and Cambodia to Cease Hostilities Amid Ongoing Border Dispute": Error: Invalid JSON response from OpenAI
+    at analyzeContent (lib/openai.ts:74:12)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  72 |     } catch (parseError) {
+  73 |       console.error('Failed to parse OpenAI response:', result)
+> 74 |       throw new Error('Invalid JSON response from OpenAI')
+     |            ^
+  75 |     }
+  76 |
+  77 |     // If conflict relevance is high and we have an article ID, perform detailed conflict analysis
+ GET / 404 in 6ms
+ GET / 404 in 9ms
+ GET / 404 in 5ms
+ GET / 404 in 9ms
+ GET / 404 in 10ms
+ GET / 404 in 9ms
+ GET / 404 in 4ms
+ GET / 404 in 5ms
+ GET / 404 in 17ms
+ GET / 404 in 844ms
+Failed to parse conflict analysis response: The provided content does not contain specific details about casualties, affected population, weapons, economic impact, or border status. However, it does mention a diplomatic meeting between Thailand and Cambodia, facilitated by Malaysia. The confidence score is low due to the lack of detailed information. Here is the extracted information in JSON format:
+
+```json
+{
+  "statistics": {
+    "casualties": {
+      "thailand": 0,
+      "cambodia": 0, 
+      "total": 0,
+      "verified": false
+    },
+    "population": {
+      "affected": 0,
+      "displaced": 0,
+      "areas": []
+    },
+    "weapons": {
+      "types": [],
+      "activity": ""
+    },
+    "economy": {
+      "loss": null,
+      "tradeDisruption": false,
+      "borderStatus": ""
+    },
+    "diplomacy": {
+      "tension": 1,
+      "statements": 1,
+      "meetings": 1
+    },
+    "confidence": 0.2
+  },
+  "casualties": [],
+  "weapons": [],
+  "impacts": [],
+  "summary": "Leaders of Thailand and Cambodia are scheduled to meet in Malaysia for discussions around the border conflict. The meeting was initiated by the Prime Minister of Malaysia, Mr. Anwar Ibrahim.",
+  "keyDevelopments": [
+    {
+      "date": "UNKNOWN",
+      "description": "Thailand and Cambodia leaders to meet in Malaysia for discussions around border conflict.",
+      "confidence": 0.2
+    }
+  ],
+  "riskAssessment": 1,
+  "overallConfidence": 0.2
+}
+```
+
+Please note that the confidence score is low due to the lack of detailed information. The tension and risk assessment scores are set to 1, indicating a low level of tension and risk based on the available information. The meeting between the leaders is counted as a diplomatic statement and meeting.
+Conflict analysis error: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+Conflict analysis failed, continuing with basic analysis: Error: Invalid JSON response from OpenAI conflict analysis
+    at analyzeConflictStatistics (lib/conflict-analytics.ts:191:12)
+    at async analyzeContent (lib/openai.ts:80:33)
+    at async POST (app/api/monitor/news/route.ts:111:29)
+  189 |     } catch (parseError) {
+  190 |       console.error('Failed to parse conflict analysis response:', result)
+> 191 |       throw new Error('Invalid JSON response from OpenAI conflict analysis')
+      |            ^
+  192 |     }
+  193 |   } catch (error) {
+  194 |     console.error('Conflict analysis error:', error)
+ GET / 404 in 10ms
+Processed relevant article: Thailand and Cambodia Leaders to Meet in Malaysia for Discussions Around Border Conflict
+ GET / 404 in 6ms
+ GET / 404 in 4ms
+ GET / 404 in 6ms
+ GET / 404 in 26ms
+ GET / 404 in 5ms
+ GET / 404 in 5ms
+ GET / 404 in 5ms
+ GET / 404 in 4ms
+[?25h

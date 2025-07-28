@@ -1,0 +1,286 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum SourceType {
+  FACEBOOK_POST
+  NEWS_ARTICLE
+}
+
+enum ContentStatus {
+  PENDING
+  PROCESSING
+  ANALYZED
+  PUBLISHED
+  ERROR
+}
+
+enum Country {
+  THAILAND
+  CAMBODIA
+  UNKNOWN
+}
+
+enum VerificationLevel {
+  UNVERIFIED
+  PARTIAL
+  VERIFIED
+  OFFICIAL
+}
+
+enum ImpactType {
+  DISPLACEMENT
+  ECONOMIC_LOSS
+  INFRASTRUCTURE_DAMAGE
+  CIVILIAN_CASUALTIES
+  BORDER_CLOSURE
+  TRADE_DISRUPTION
+}
+
+model Source {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  type        SourceType
+  url         String   @unique
+  isActive    Boolean  @default(true)
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  articles    Article[]
+  
+  @@map("sources")
+}
+
+model Article {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  sourceId        String        @db.ObjectId
+  title           String
+  content         String
+  originalUrl     String?
+  summary         String?
+  aiAnalysis      String?
+  publishedAt     DateTime
+  status          ContentStatus @default(PENDING)
+  tags            String[]
+  metadata        Json?
+  conflictData    Json?         // Enhanced conflict-specific analysis data
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  
+  source          Source        @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  timelineEvents  TimelineEvent[]
+  casualtyReports CasualtyReport[]
+  weaponUsages    WeaponUsage[]
+  populationImpacts PopulationImpact[]
+  
+  @@map("articles")
+}
+
+model TimelineEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  articleId   String   @db.ObjectId
+  eventType   String
+  eventDate   DateTime
+  title       String
+  description String?
+  importance  Int      @default(1) // 1-5 scale
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  article     Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  @@map("timeline_events")
+}
+
+model MonitoringLog {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  sourceType    SourceType
+  action        String
+  status        String
+  message       String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  
+  @@map("monitoring_logs")
+}
+
+model Configuration {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  key         String   @unique
+  value       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("configurations")
+}
+
+// New Conflict Analytics Models
+
+model ConflictAnalytics {
+  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  date                  DateTime // Daily analytics date
+  
+  // Casualty Statistics
+  thailandCasualties    Int      @default(0)
+  cambodiaCasualties    Int      @default(0)  
+  totalCasualties       Int      @default(0)
+  casualtiesVerified    Boolean  @default(false)
+  
+  // Population Impact
+  affectedPopulation    Int      @default(0)
+  displacedCivilians    Int      @default(0)
+  affectedAreas         String[] // List of affected locations
+  
+  // Military Equipment
+  weaponTypesReported   String[] // List of weapon types mentioned
+  militaryActivity      String?  // Summary of military activities
+  
+  // Economic Impact
+  economicLoss          Float?   // Estimated economic impact
+  tradeDisruption       Boolean  @default(false)
+  borderStatus          String?  // Open/Closed/Restricted
+  
+  // Diplomatic Status
+  diplomaticTension     Int      @default(1) // 1-10 scale
+  officialStatements    Int      @default(0) // Count of official statements
+  meetingsScheduled     Int      @default(0) // Count of diplomatic meetings
+  
+  // AI Analysis
+  dailySummary          String?  // AI-generated daily summary
+  keyDevelopments       String[] // Important events of the day
+  riskAssessment        Int      @default(1) // 1-10 risk level
+  confidenceScore       Float    @default(0.0) // AI confidence in analysis
+  
+  // Data Quality
+  sourcesAnalyzed       Int      @default(0) // Number of articles processed
+  verificationLevel     VerificationLevel @default(UNVERIFIED)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  @@unique([date])
+  @@map("conflict_analytics")
+}
+
+model CasualtyReport {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  articleId       String   @db.ObjectId
+  
+  // Location and Time
+  location        String
+  incidentDate    DateTime
+  reportedDate    DateTime
+  
+  // Casualty Details
+  country         Country
+  casualties      Int      @default(0)
+  injured         Int      @default(0)
+  missing         Int      @default(0)
+  
+  // Incident Details
+  cause           String?  // Cause of casualties
+  incidentType    String?  // Border skirmish, accident, etc.
+  description     String?
+  
+  // Verification
+  verificationLevel VerificationLevel @default(UNVERIFIED)
+  sourceName      String?  // Name of reporting source
+  officialConfirmed Boolean @default(false)
+  
+  // Metadata
+  confidence      Float    @default(0.0)
+  extractedBy     String   @default("AI") // AI or Manual
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  article         Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  @@map("casualty_reports")
+}
+
+model WeaponUsage {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  articleId       String   @db.ObjectId
+  
+  // Weapon Details
+  weaponType      String   // Type of weapon/equipment
+  weaponName      String?  // Specific name if mentioned
+  country         Country  // Which country is using it
+  
+  // Deployment Details
+  location        String?  // Where it was deployed/mentioned
+  deploymentDate  DateTime?
+  purpose         String?  // Purpose of deployment
+  quantity        Int?     // Number if mentioned
+  
+  // Context
+  context         String?  // Context of usage/mention
+  threatLevel     Int      @default(1) // 1-10 threat assessment
+  
+  // Verification
+  verificationLevel VerificationLevel @default(UNVERIFIED)
+  sourceName      String?
+  officialConfirmed Boolean @default(false)
+  
+  // Metadata
+  confidence      Float    @default(0.0)
+  extractedBy     String   @default("AI")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  article         Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  @@map("weapon_usage")
+}
+
+model PopulationImpact {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  articleId       String   @db.ObjectId
+  
+  // Location and Impact
+  location        String
+  country         Country
+  impactType      ImpactType
+  
+  // Numbers
+  affectedCount   Int      @default(0)
+  estimatedCount  Boolean  @default(true) // Is this an estimate?
+  
+  // Demographics
+  demographics    Json?    // Age groups, gender breakdown if available
+  vulnerableGroups String[] // Children, elderly, disabled, etc.
+  
+  // Impact Details
+  description     String?
+  duration        String?  // How long the impact is expected
+  severity        Int      @default(1) // 1-10 severity scale
+  
+  // Response
+  reliefEfforts   String?  // Any relief efforts mentioned
+  governmentResponse String?
+  
+  // Verification
+  verificationLevel VerificationLevel @default(UNVERIFIED)
+  sourceName      String?
+  officialConfirmed Boolean @default(false)
+  
+  // Metadata
+  confidence      Float    @default(0.0)
+  extractedBy     String   @default("AI")
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  article         Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  
+  @@map("population_impacts")
+}
