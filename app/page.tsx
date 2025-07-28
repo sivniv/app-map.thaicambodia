@@ -27,6 +27,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [selectedSourceId, setSelectedSourceId] = useState<string | null>(null)
   const [selectedSourceName, setSelectedSourceName] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [clickCount, setClickCount] = useState(0)
 
   const fetchData = useCallback(async () => {
     try {
@@ -58,6 +60,9 @@ export default function Home() {
 
   useEffect(() => {
     fetchData()
+    // Check admin status from localStorage
+    const adminStatus = localStorage.getItem('isAdmin') === 'true'
+    setIsAdmin(adminStatus)
   }, [fetchData])
 
   const triggerMonitoring = async (type: 'news' | 'official-pages') => {
@@ -91,15 +96,48 @@ export default function Home() {
     setSelectedSourceName(sourceName)
   }
 
+  const toggleAdmin = () => {
+    if (isAdmin) {
+      // If already admin, disable immediately
+      setIsAdmin(false)
+      setClickCount(0)
+      localStorage.setItem('isAdmin', 'false')
+    } else {
+      // Require 3 clicks to enable admin mode
+      const newCount = clickCount + 1
+      setClickCount(newCount)
+      
+      if (newCount >= 3) {
+        setIsAdmin(true)
+        setClickCount(0)
+        localStorage.setItem('isAdmin', 'true')
+      } else {
+        // Reset click count after 2 seconds if not completed
+        setTimeout(() => {
+          setClickCount(0)
+        }, 2000)
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 
+                className="text-xl font-semibold text-gray-900 cursor-pointer select-none"
+                onClick={toggleAdmin}
+                title={isAdmin ? "Admin mode: ON (click to disable)" : `Click ${3 - clickCount} more times to enable admin mode`}
+              >
                 Thailand-Cambodia Conflict Monitor
               </h1>
+              {isAdmin && (
+                <span className="ml-3 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">
+                  ADMIN
+                </span>
+              )}
             </div>
             <div className="flex items-center space-x-4">
               <Link
@@ -126,18 +164,22 @@ export default function Home() {
               >
                 Full Timeline
               </Link>
-              <Link
-                href="/admin"
-                className="px-4 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 transition-colors"
-              >
-                Admin
-              </Link>
-              <button
-                onClick={() => triggerMonitoring('official-pages')}
-                className="px-4 py-2 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700 transition-colors"
-              >
-                Official Pages
-              </button>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  className="px-4 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
+              {isAdmin && (
+                <button
+                  onClick={() => triggerMonitoring('official-pages')}
+                  className="px-4 py-2 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700 transition-colors"
+                >
+                  Official Pages
+                </button>
+              )}
               <button
                 onClick={() => triggerMonitoring('news')}
                 className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
