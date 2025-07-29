@@ -1,0 +1,21 @@
+{
+  "functions": {
+    "app/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/openai-analytics",
+      "schedule": "0 */12 * * *"
+    },
+    {
+      "path": "/api/monitor/news",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/monitor/official-pages",
+      "schedule": "0 */3 * * *"
+    }
+  ]
+}

@@ -559,6 +559,277 @@ export default function ConflictOriginsPage() {
         </div>
       </section>
 
+      {/* From Preah Vihear to Ta Moan: The Continuing Pattern (2008-2025) */}
+      <section className="py-20 px-4 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold text-white mb-6">From Preah Vihear to Ta Moan: The Continuing Pattern</h2>
+            <p className="text-xl text-blue-200 max-w-4xl mx-auto">
+              The 2008-2025 timeline reveals Thailand's consistent pattern: accepting international processes until facing domestic crisis, then rejecting international law when losing.
+            </p>
+          </div>
+
+          {/* Timeline Phases */}
+          <div className="space-y-12">
+            {/* Phase 1: 2008-2013 Preah Vihear Crisis */}
+            <div className="bg-gradient-to-r from-red-900/30 to-orange-900/30 backdrop-blur-sm border border-red-500/30 rounded-2xl p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mr-6">
+                  <AlertTriangle className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-white">2008-2013: The Preah Vihear Crisis</h3>
+                  <p className="text-red-200">History's first lesson in manufactured conflict</p>
+                </div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-xl font-semibold text-white mb-4">The Pattern Emerges</h4>
+                  <ul className="space-y-3 text-gray-200">
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span><strong>July 2008:</strong> Cambodia successfully registers Preah Vihear as UNESCO World Heritage Site</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span><strong>July 15, 2008:</strong> Thailand suddenly objects, 50 Thai soldiers enter Cambodian territory</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span><strong>2008-2011:</strong> Multiple armed clashes, 34+ deaths from artillery exchanges</span>
+                    </li>
+                    <li className="flex items-start">
+                      <div className="w-2 h-2 bg-red-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span><strong>February 2011:</strong> Thai artillery damages ancient temple structure</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div className="bg-black/40 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-white mb-4">The Legal Resolution</h4>
+                  <blockquote className="text-white text-lg italic mb-4 border-l-4 border-blue-500 pl-4">
+                    "The ICJ declares in a unanimous decision that the 1962 judgment had awarded all of the promontory of Preah Vihear to Cambodia and that Thailand has an obligation to withdraw any forces."
+                  </blockquote>
+                  <cite className="text-gray-400">— International Court of Justice, November 11, 2013</cite>
+                  <div className="mt-4 p-3 bg-green-900/30 rounded-lg">
+                    <span className="text-green-400 font-semibold">Result:</span>
+                    <span className="text-green-200 ml-2">Cambodia wins unanimous ICJ ruling</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Phase 2: 2013-2024 Calm Period */}
+            <div className="bg-gradient-to-r from-green-900/30 to-teal-900/30 backdrop-blur-sm border border-green-500/30 rounded-2xl p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mr-6">
+                  <Clock className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-white">2013-2024: The Calm Before the Storm</h3>
+                  <p className="text-green-200">11 years of peace through international law</p>
+                </div>
+              </div>
+              
+              <div className="text-center">
+                <div className="text-6xl font-bold text-green-400 mb-4">11 Years</div>
+                <p className="text-xl text-green-200 mb-6">of relative peace after ICJ ruling</p>
+                <div className="grid md:grid-cols-3 gap-6 text-sm">
+                  <div className="bg-green-900/20 p-4 rounded-lg">
+                    <div className="text-green-400 font-semibold mb-2">LEGAL PRECEDENT</div>
+                    <p className="text-gray-300">ICJ ruling provided clear legal framework for border management</p>
+                  </div>
+                  <div className="bg-green-900/20 p-4 rounded-lg">
+                    <div className="text-green-400 font-semibold mb-2">BILATERAL COOPERATION</div>
+                    <p className="text-gray-300">Regular Joint Boundary Committee meetings maintained stability</p>
+                  </div>
+                  <div className="bg-green-900/20 p-4 rounded-lg">
+                    <div className="text-green-400 font-semibold mb-2">PEACEFUL COEXISTENCE</div>
+                    <p className="text-gray-300">Direct military communications prevented major incidents</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Phase 3: 2025 Ta Moan Crisis */}
+            <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mr-6">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-3xl font-bold text-white">2025: History Repeats at Ta Moan Temple</h3>
+                  <p className="text-purple-200">The same pattern, a new location, deadlier consequences</p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                {/* The Fatal Incident */}
+                <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <MapPin className="w-6 h-6 mr-2 text-red-400" />
+                    The Fatal Incident: May 28, 2025
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-gray-200 mb-4">
+                        At Ta Moan temple, on undisputed Cambodian land, Thai forces killed a Cambodian soldier during a border patrol. 
+                        This unprovoked attack on Cambodian territory marked the beginning of the current crisis.
+                      </p>
+                      <div className="bg-yellow-900/30 p-4 rounded-lg">
+                        <span className="text-yellow-400 font-semibold">Location:</span>
+                        <span className="text-yellow-200 ml-2">Ta Moan temple complex, Cambodian territory</span>
+                      </div>
+                    </div>
+                    <div className="bg-black/40 p-4 rounded-lg">
+                      <h5 className="text-white font-semibold mb-2">Cambodia's Response</h5>
+                      <p className="text-gray-300 text-sm">
+                        No immediate military retaliation. Instead, Cambodia called for peaceful resolution 
+                        and prepared to seek international legal remedy through the ICJ.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cambodia's Legal Approach */}
+                <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <Scale className="w-6 h-6 mr-2 text-blue-400" />
+                    Cambodia Chooses Peace: June 2025 ICJ Submission
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <blockquote className="text-white text-lg italic mb-4 border-l-4 border-blue-500 pl-4">
+                        "Cambodia's Ambassador to the Netherlands travelled to The Hague and handed over the country's official submission letter to the ICJ at 11:30 am local time on June 17, 2025."
+                      </blockquote>
+                      <cite className="text-gray-400">— The Diplomat, June 2025</cite>
+                    </div>
+                    <div>
+                      <h5 className="text-white font-semibold mb-2">Four Disputed Areas</h5>
+                      <ul className="text-gray-300 text-sm space-y-1">
+                        <li>• Ta Moan Thom temple</li>
+                        <li>• Ta Moan Toch temple</li>
+                        <li>• Ta Krabei temple</li>
+                        <li>• Emerald Triangle area</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Thailand's Rejection */}
+                <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <AlertTriangle className="w-6 h-6 mr-2 text-red-400" />
+                    Thailand Rejects International Law: The Pattern Continues
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <blockquote className="text-white text-lg italic mb-4 border-l-4 border-red-500 pl-4">
+                        "Thailand does not recognize the jurisdiction of the court and all issues should be solved bilaterally."
+                      </blockquote>
+                      <cite className="text-gray-400">— Thai Government Statement, June 2025</cite>
+                    </div>
+                    <div className="bg-yellow-900/30 p-4 rounded-lg">
+                      <h5 className="text-yellow-200 font-semibold mb-2">The Real Reason</h5>
+                      <p className="text-gray-300 text-sm">
+                        Thailand has not recognized ICJ compulsory jurisdiction since 1960, 
+                        knowing they consistently lose when international law is applied.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* The Escalation to War */}
+                <div className="bg-black/60 border border-gray-700 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-white mb-4 flex items-center">
+                    <TrendingUp className="w-6 h-6 mr-2 text-orange-400" />
+                    July 24, 2025: From Diplomacy to Devastation
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-red-400 mb-2">32+</div>
+                      <p className="text-red-200 text-sm">Confirmed Deaths</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-orange-400 mb-2">200,000+</div>
+                      <p className="text-orange-200 text-sm">Displaced Civilians</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-yellow-400 mb-2">F-16</div>
+                      <p className="text-yellow-200 text-sm">Airstrikes Deployed</p>
+                    </div>
+                  </div>
+                  <div className="mt-6 p-4 bg-red-900/40 rounded-lg">
+                    <p className="text-white text-center">
+                      <strong>The worst fighting in over a decade</strong> - all because Thailand refused peaceful legal resolution
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* The Pattern Analysis */}
+          <div className="mt-16 bg-gradient-to-r from-yellow-600/20 to-red-600/20 backdrop-blur-sm border border-yellow-500/30 rounded-2xl p-8">
+            <h3 className="text-3xl font-bold text-white mb-6 text-center">The Undeniable Pattern</h3>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-xl font-semibold text-green-400 mb-4">Cambodia's Consistent Approach</h4>
+                <ul className="space-y-2 text-gray-200">
+                  <li className="flex items-center"><div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>1962: Wins ICJ ruling for Preah Vihear</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>2013: Wins ICJ clarification ruling</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>2025: Requests ICJ intervention again</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>Never initiates armed conflict</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-red-400 mb-4">Thailand's Predictable Response</h4>
+                <ul className="space-y-2 text-gray-200">
+                  <li className="flex items-center"><div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>Initially accepts international processes</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>Objects when domestic crisis emerges</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>Escalates to military confrontation</li>
+                  <li className="flex items-center"><div className="w-2 h-2 bg-red-400 rounded-full mr-3"></div>Rejects ICJ when losing</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="mt-8 text-center">
+              <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-6 rounded-xl">
+                <p className="text-2xl text-white font-semibold mb-2">17 Years, Same Pattern</p>
+                <p className="text-gray-200">
+                  From Preah Vihear (2008) to Ta Moan (2025), Thailand's playbook never changes: 
+                  reject international law, choose military force, blame Cambodia for the consequences.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Sources Section */}
+          <div className="mt-12 bg-gray-900/50 backdrop-blur-sm border border-gray-700/30 rounded-2xl p-6">
+            <h4 className="text-lg font-semibold text-white mb-4 text-center">Verified Sources</h4>
+            <div className="grid md:grid-cols-4 gap-4 text-sm">
+              <a href="https://thediplomat.com/2025/06/cambodia-officially-requests-icj-intervention-in-thai-border-dispute/" target="_blank" rel="noopener noreferrer" className="bg-blue-900/20 p-3 rounded hover:bg-blue-900/40 transition-colors">
+                <div className="text-blue-400 font-semibold">The Diplomat</div>
+                <div className="text-gray-300">ICJ Submission Coverage</div>
+              </a>
+              <a href="https://www.aljazeera.com/news/2025/7/24/what-we-know-about-clashes-on-the-thai-cambodian-border" target="_blank" rel="noopener noreferrer" className="bg-green-900/20 p-3 rounded hover:bg-green-900/40 transition-colors">
+                <div className="text-green-400 font-semibold">Al Jazeera</div>
+                <div className="text-gray-300">Current Conflict Analysis</div>
+              </a>
+              <a href="https://www.bangkokpost.com/thailand/politics/3042720/thailand-rejects-the-international-court-of-justices-jurisdiction" target="_blank" rel="noopener noreferrer" className="bg-orange-900/20 p-3 rounded hover:bg-orange-900/40 transition-colors">
+                <div className="text-orange-400 font-semibold">Bangkok Post</div>
+                <div className="text-gray-300">Thailand's ICJ Rejection</div>
+              </a>
+              <a href="https://en.wikipedia.org/wiki/2025_Cambodia–Thailand_border_conflict" target="_blank" rel="noopener noreferrer" className="bg-purple-900/20 p-3 rounded hover:bg-purple-900/40 transition-colors">
+                <div className="text-purple-400 font-semibold">Wikipedia</div>
+                <div className="text-gray-300">Comprehensive Timeline</div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="py-20 px-4 bg-gradient-to-r from-red-600 to-orange-600">
         <div className="container mx-auto max-w-4xl text-center">

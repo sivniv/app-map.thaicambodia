@@ -8,6 +8,8 @@ import TimelineGraph from '@/components/TimelineGraph'
 import ArticleCard from '@/components/ArticleCard'
 import SourceFilter from '@/components/SourceFilter'
 import ConflictDashboard from '@/components/ConflictDashboard'
+import LanguageSelector from '@/components/LanguageSelector'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface Stats {
   totalArticles: number
@@ -17,6 +19,7 @@ interface Stats {
 }
 
 export default function Home() {
+  const { t } = useLanguage()
   const [articles, setArticles] = useState<any[]>([])
   const [stats, setStats] = useState<Stats>({
     totalArticles: 0,
@@ -131,7 +134,7 @@ export default function Home() {
                 onClick={toggleAdmin}
                 title={isAdmin ? "Admin mode: ON (click to disable)" : `Click ${3 - clickCount} more times to enable admin mode`}
               >
-                Thailand-Cambodia Conflict Monitor
+                {t.conflictAnalyticsTitle}
               </h1>
               {isAdmin && (
                 <span className="ml-3 px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full font-medium">
@@ -140,6 +143,13 @@ export default function Home() {
               )}
             </div>
             <div className="flex items-center space-x-4">
+              <LanguageSelector />
+              <Link
+                href="/thailand-cambodia-research"
+                className="px-4 py-2 bg-purple-600 text-white text-sm rounded-md hover:bg-purple-700 transition-colors font-semibold"
+              >
+                Deep Research
+              </Link>
               <Link
                 href="/conflict-origins"
                 className="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors font-semibold"
@@ -157,6 +167,12 @@ export default function Home() {
                 className="px-4 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors"
               >
                 Conflict History
+              </Link>
+              <Link
+                href="/timeline-2025"
+                className="px-4 py-2 bg-red-700 text-white text-sm rounded-md hover:bg-red-800 transition-colors font-semibold"
+              >
+                2025 Timeline
               </Link>
               <Link
                 href="/timeline"
@@ -180,12 +196,14 @@ export default function Home() {
                   Official Pages
                 </button>
               )}
-              <button
-                onClick={() => triggerMonitoring('news')}
-                className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
-              >
-                Refresh News
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => triggerMonitoring('news')}
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors"
+                >
+                  Refresh News
+                </button>
+              )}
               <span className="text-sm text-gray-500">Real-time monitoring</span>
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { LanguageProvider } from "@/context/LanguageContext";
+import PageTranslator from "@/components/PageTranslator";
 
 export const metadata: Metadata = {
   title: "Thailand-Cambodia Conflict Monitor",
@@ -14,7 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <LanguageProvider>
+          <PageTranslator>
+            {children}
+          </PageTranslator>
+        </LanguageProvider>
       </body>
     </html>
   );

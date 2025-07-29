@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Clock, MapPin, Users, AlertTriangle, Scroll } from 'lucide-react';
+import HistoricalMap from '@/components/HistoricalMap';
 
 const timelineEvents = [
   {
@@ -139,9 +140,9 @@ const timelineEvents = [
   {
     period: "2025",
     title: "Renewed Conflict Eruption",
-    description: "Tensions dramatically escalate in 2025 with the worst fighting since the dispute began. Clashes at Chong Bok pass in May precede full armed conflict breaking out in July, marking a dangerous new phase in the centuries-old territorial dispute.",
+    description: "Tensions dramatically escalate in 2025 with the worst fighting since the dispute began. Clashes at Ta Moan temple in May precede full armed conflict breaking out in July, marking a dangerous new phase in the centuries-old territorial dispute.",
     keyEvents: [
-      "May 28, 2025: Major clashes at Chong Bok pass",
+      "May 28, 2025: Major clashes at Ta Moan temple",
       "July 2025: Diplomatic incidents escalate tensions",
       "July 24, 2025: Open armed conflict erupts",
       "Present: Ongoing military confrontations and casualties"
@@ -290,9 +291,23 @@ export default function ConflictHistoryPage() {
                     </span>
                   </div>
                   
-                  <p className="text-gray-700 mb-4 leading-relaxed">
-                    {event.description}
-                  </p>
+                  {/* Main content with description and map */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
+                    <div className="lg:col-span-2">
+                      <p className="text-gray-700 leading-relaxed">
+                        {event.description}
+                      </p>
+                    </div>
+                    
+                    {/* Historical Map */}
+                    <div className="lg:col-span-1">
+                      <HistoricalMap 
+                        period={event.period}
+                        title={event.title}
+                        description="Territorial boundaries during this period"
+                      />
+                    </div>
+                  </div>
 
                   {selectedPeriod === event.period && (
                     <div className="mt-4 p-4 bg-white border border-gray-200 rounded-lg">

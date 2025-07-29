@@ -54,7 +54,7 @@ export class OpenAIAnalyticsService {
   private async queryOpenAI(prompt: string): Promise<string> {
     try {
       const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4o-2024-11-20',
         messages: [
           {
             role: 'system',

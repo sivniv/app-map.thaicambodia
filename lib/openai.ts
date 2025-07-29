@@ -46,7 +46,7 @@ Rate importance (1-5) and conflict relevance (1-10 where 10 is highly relevant).
 `
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o-2024-11-20',
       messages: [
         {
           role: 'system',
@@ -95,7 +95,7 @@ Rate importance (1-5) and conflict relevance (1-10 where 10 is highly relevant).
 export async function generateSummary(content: string, maxLength: number = 300): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o-2024-11-20',
       messages: [
         {
           role: 'system',

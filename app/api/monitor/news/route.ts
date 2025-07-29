@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { NewsMonitor, NEWS_SOURCES, isThailandCambodiaRelated } from '@/lib/news'
 import { analyzeContent } from '@/lib/openai'
 import { prisma } from '@/lib/prisma'
+import { newsAPIManager } from '@/lib/news-apis'
+import { getActiveRSSSources } from '@/lib/rss-sources'
 
 const newsMonitor = new NewsMonitor(process.env.NEWS_API_KEY || '')
 
@@ -19,26 +21,30 @@ export async function POST(request: NextRequest) {
     let totalProcessed = 0
     let totalRelevant = 0
 
-    for (const source of NEWS_SOURCES) {
+    // First, fetch from enhanced RSS sources with Cloudflare bypass
+    const enhancedRSSSources = getActiveRSSSources()
+    console.log(`🔍 Processing ${enhancedRSSSources.length} enhanced RSS sources...`)
+
+    for (const source of enhancedRSSSources) {
       try {
         const dbSource = await prisma.source.upsert({
           where: {
-            url: source.rssUrl,
+            url: source.url,
           },
           update: {
             name: source.name,
-            isActive: true,
+            isActive: source.active,
           },
           create: {
             name: source.name,
             type: 'NEWS_ARTICLE',
-            url: source.rssUrl,
-            description: `RSS feed from ${source.name}`,
+            url: source.url,
+            description: `${source.country} news - ${source.category} (${source.language})`,
           },
         })
 
-        const articles = await newsMonitor.fetchFromRSS(source.rssUrl)
-        console.log(`Fetched ${articles.length} articles from ${source.name}`)
+        const articles = await newsMonitor.fetchFromRSS(source.url, source.name)
+        console.log(`✅ ${source.name}: ${articles.length} articles (CF protected: ${source.cloudflareProtected})`)
 
         for (const article of articles) {
           try {
@@ -128,7 +134,7 @@ export async function POST(request: NextRequest) {
                 tags: analysis.keywords,
                 metadata: {
                   author: article.author,
-                  sourceWebsite: source.website,
+                  sourceWebsite: source.website || source.url,
                   imageUrl: article.urlToImage,
                   importance: analysis.importance,
                   conflictRelevance: analysis.conflictRelevance,
@@ -165,10 +171,127 @@ export async function POST(request: NextRequest) {
             action: 'source_processing',
             status: 'ERROR',
             message: `Error processing ${source.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            metadata: { sourceName: source.name, sourceUrl: source.rssUrl },
+            metadata: { sourceName: source.name, sourceUrl: source.rssUrl || source.url },
           },
         })
       }
+    }
+
+    // Now fetch from additional news APIs as backup/supplement
+    console.log('🌐 Fetching from additional news APIs...')
+    try {
+      const apiResult = await newsAPIManager.fetchFromAllAPIs('Thailand Cambodia conflict border dispute')
+      console.log(`📊 API Results: ${apiResult.articles.length} articles from multiple APIs`)
+
+      for (const article of apiResult.articles) {
+        try {
+          if (!isThailandCambodiaRelated(article.content || article.description || '', article.title)) {
+            continue
+          }
+
+          // Check for duplicates
+          const existingArticle = await prisma.article.findFirst({
+            where: {
+              OR: [
+                { originalUrl: article.url },
+                { 
+                  AND: [
+                    { title: { contains: article.title.substring(0, 50) } },
+                    { publishedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }
+                  ]
+                }
+              ]
+            }
+          })
+
+          if (existingArticle) {
+            continue
+          }
+
+          // Create source for API if it doesn't exist
+          const apiSource = await prisma.source.upsert({
+            where: { url: article.source.url || 'api-source' },
+            update: { name: article.source.name },
+            create: {
+              name: article.source.name,
+              type: 'NEWS_ARTICLE',
+              url: article.source.url || 'api-source',
+              description: 'News API source'
+            }
+          })
+
+          const fullContent = article.content || article.description || ''
+
+          const createdArticle = await prisma.article.create({
+            data: {
+              sourceId: apiSource.id,
+              title: article.title,
+              content: fullContent,
+              originalUrl: article.url,
+              publishedAt: new Date(article.publishedAt),
+              status: 'PROCESSING',
+              tags: [],
+              metadata: {
+                author: article.author,
+                imageUrl: article.urlToImage,
+                sourceType: 'API'
+              },
+            },
+          })
+
+          const analysis = await analyzeContent(fullContent, article.title, createdArticle.id)
+
+          if (analysis.conflictRelevance < 3) {
+            await prisma.article.delete({ where: { id: createdArticle.id } })
+            continue
+          }
+
+          await prisma.article.update({
+            where: { id: createdArticle.id },
+            data: {
+              summary: analysis.summary,
+              aiAnalysis: JSON.stringify(analysis),
+              status: 'ANALYZED',
+              tags: analysis.keywords,
+              metadata: {
+                author: article.author,
+                imageUrl: article.urlToImage,
+                importance: analysis.importance,
+                conflictRelevance: analysis.conflictRelevance,
+                sentiment: analysis.sentiment,
+                sourceType: 'API'
+              },
+            },
+          })
+
+          await prisma.timelineEvent.create({
+            data: {
+              articleId: createdArticle.id,
+              eventType: 'news_article',
+              eventDate: new Date(article.publishedAt),
+              title: article.title,
+              description: analysis.summary,
+              importance: analysis.importance,
+            },
+          })
+
+          totalProcessed++
+          totalRelevant++
+
+        } catch (error) {
+          console.error('Error processing API article:', error)
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error fetching from news APIs:', error)
+      await prisma.monitoringLog.create({
+        data: {
+          sourceType: 'NEWS_ARTICLE',
+          action: 'api_fetch_error',
+          status: 'ERROR',
+          message: `Error fetching from news APIs: ${error instanceof Error ? error.message : 'Unknown error'}`
+        },
+      })
     }
 
     await prisma.monitoringLog.create({
@@ -176,8 +299,13 @@ export async function POST(request: NextRequest) {
         sourceType: 'NEWS_ARTICLE',
         action: 'monitoring_completed',
         status: 'SUCCESS',
-        message: `Monitoring completed. Processed ${totalProcessed} articles, found ${totalRelevant} relevant articles`,
-        metadata: { totalProcessed, totalRelevant },
+        message: `Enhanced monitoring completed. Processed ${totalProcessed} articles, found ${totalRelevant} relevant articles`,
+        metadata: { 
+          totalProcessed, 
+          totalRelevant, 
+          enhancedRSSSources: enhancedRSSSources.length,
+          cloudflareBypassEnabled: true
+        },
       },
     })
 
@@ -185,7 +313,9 @@ export async function POST(request: NextRequest) {
       success: true,
       totalProcessed,
       totalRelevant,
-      sources: NEWS_SOURCES.length,
+      sources: enhancedRSSSources.length,
+      cloudflareBypassEnabled: true,
+      message: `Enhanced monitoring with Cloudflare bypass capability`
     })
   } catch (error) {
     console.error('News monitoring error:', error)

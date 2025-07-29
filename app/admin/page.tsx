@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import SchedulerControl from '@/components/SchedulerControl'
+import LanguageSelector from '@/components/LanguageSelector'
+import AdminAuth from '@/components/AdminAuth'
 
 interface MonitoringLog {
   id: string
@@ -173,6 +175,29 @@ export default function AdminDashboard() {
     }
   }
 
+  const scrapeHistoricalMaps = async () => {
+    if (!confirm('This will scrape historical maps from Wikipedia and other sources. This may take several minutes. Continue?')) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/admin/scrape-maps', { method: 'POST' })
+      const data = await response.json()
+      
+      if (data.success) {
+        alert(`Map scraping completed! Downloaded ${data.maps.length} historical maps`)
+        if (data.errors && data.errors.length > 0) {
+          console.warn('Some errors occurred during scraping:', data.errors)
+        }
+        fetchData()
+      } else {
+        alert('Map scraping failed: ' + (data.details || data.error))
+      }
+    } catch (error) {
+      alert('Error during map scraping: ' + error)
+    }
+  }
+
   const toggleSource = async (sourceId: string, isActive: boolean) => {
     try {
       const response = await fetch(`/api/admin/sources/${sourceId}`, {
@@ -227,6 +252,7 @@ export default function AdminDashboard() {
   }
 
   return (
+    <AdminAuth>
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -237,6 +263,7 @@ export default function AdminDashboard() {
               </h1>
             </div>
             <div className="flex items-center space-x-3">
+              <LanguageSelector />
               <button
                 onClick={() => triggerMonitoring('official-pages')}
                 className="px-3 py-2 bg-orange-600 text-white text-sm rounded-md hover:bg-orange-700"
@@ -260,6 +287,12 @@ export default function AdminDashboard() {
                 className="px-3 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
               >
                 Weekly Trends
+              </button>
+              <button
+                onClick={scrapeHistoricalMaps}
+                className="px-3 py-2 bg-amber-600 text-white text-sm rounded-md hover:bg-amber-700"
+              >
+                📍 Scrape Maps
               </button>
             </div>
           </div>
@@ -467,6 +500,12 @@ export default function AdminDashboard() {
                   🗑️ Clean Facebook Logs
                 </button>
                 <button
+                  onClick={scrapeHistoricalMaps}
+                  className="w-full px-4 py-2 bg-amber-600 text-white text-sm rounded-md hover:bg-amber-700"
+                >
+                  📍 Scrape Historical Maps
+                </button>
+                <button
                   onClick={() => window.location.href = '/'}
                   className="w-full px-4 py-2 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700"
                 >
@@ -489,6 +528,7 @@ export default function AdminDashboard() {
         )}
       </main>
     </div>
+    </AdminAuth>
   )
 }
 

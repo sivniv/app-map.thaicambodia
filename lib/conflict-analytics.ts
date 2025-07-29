@@ -164,7 +164,7 @@ Focus on factual extraction with high precision. Mark uncertain data with low co
 `
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o-2024-11-20',
       messages: [
         {
           role: 'system',
@@ -227,7 +227,7 @@ Keep the summary under 500 words but comprehensive.
 `
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4o-2024-11-20',
       messages: [
         {
           role: 'system',

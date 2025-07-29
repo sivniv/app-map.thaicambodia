@@ -2,6 +2,19 @@ import axios from 'axios'
 import Parser from 'rss-parser'
 import * as cheerio from 'cheerio'
 import { NewsArticle } from '@/types'
+// Import CloudflareScraper conditionally for server environments only
+const getCloudflareScraperModule = async () => {
+  try {
+    if (typeof window === 'undefined' && process.env.NODE_ENV !== 'production') {
+      const { default: CloudflareScraper } = await import('./cloudflare-scraper')
+      return CloudflareScraper
+    }
+  } catch (error) {
+    console.warn('CloudflareScraper not available in production build')
+  }
+  return null
+}
+import { ALL_RSS_SOURCES, getCloudflareProtectedSources, getActiveRSSSources } from './rss-sources'
 
 const parser = new Parser()
 
@@ -44,8 +57,17 @@ export class NewsMonitor {
     }
   }
 
-  async fetchFromRSS(feedUrl: string): Promise<NewsArticle[]> {
+  async fetchFromRSS(feedUrl: string, sourceName?: string): Promise<NewsArticle[]> {
     try {
+      // Check if this source is known to be Cloudflare protected
+      const isCloudflareProtected = this.isCloudflareProtectedSource(feedUrl)
+      
+      if (isCloudflareProtected) {
+        console.log(`🛡️ Detected Cloudflare protected source: ${sourceName || feedUrl}`)
+        return await this.fetchRSSWithCloudflareBypass(feedUrl, sourceName)
+      }
+
+      // Try standard RSS parsing first
       const feed = await parser.parseURL(feedUrl)
       
       return feed.items.map(item => ({
@@ -55,27 +77,47 @@ export class NewsMonitor {
         url: item.link || '',
         publishedAt: item.pubDate || new Date().toISOString(),
         source: {
-          name: feed.title || 'RSS Feed',
+          name: sourceName || feed.title || 'RSS Feed',
           url: feed.link || feedUrl,
         },
         author: item.creator || item.author,
       }))
     } catch (error) {
-      console.error('Error fetching RSS feed:', error)
+      console.error(`❌ Error fetching RSS feed ${feedUrl}:`, error)
+      
+      // If standard RSS parsing fails, try Cloudflare bypass as fallback
+      if (!this.isCloudflareProtectedSource(feedUrl)) {
+        console.log(`🔄 Attempting Cloudflare bypass fallback for: ${sourceName || feedUrl}`)
+        return await this.fetchRSSWithCloudflareBypass(feedUrl, sourceName)
+      }
+      
       return []
     }
   }
 
   async scrapeArticleContent(url: string): Promise<string> {
     try {
+      // First try standard scraping
       const response = await axios.get(url, {
         timeout: 10000,
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; NewsMonitor/1.0)',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
         },
       })
 
       const $ = cheerio.load(response.data)
+      
+      // Check for Cloudflare challenge indicators
+      if (this.detectCloudflareInHTML(response.data)) {
+        console.log(`🛡️ Cloudflare detected for article: ${url}`)
+        return await this.scrapeWithCloudflareBypass(url)
+      }
       
       $('script, style, nav, header, footer, aside, .advertisement, .ad').remove()
       
@@ -88,6 +130,9 @@ export class NewsMonitor {
         '.post-content',
         '.entry-content',
         'main',
+        '.text-content',
+        '.article-content',
+        '.news-content'
       ]
 
       let content = ''
@@ -105,9 +150,170 @@ export class NewsMonitor {
 
       return content.replace(/\s+/g, ' ').substring(0, 5000)
     } catch (error) {
-      console.error('Error scraping article content:', error)
+      console.error(`❌ Error with standard scraping for ${url}:`, error)
+      
+      // If standard scraping fails, try Cloudflare bypass
+      if (error instanceof Error && (error.message.includes('403') || error.message.includes('503'))) {
+        console.log(`🔄 Attempting Cloudflare bypass for article: ${url}`)
+        return await this.scrapeWithCloudflareBypass(url)
+      }
+      
       return ''
     }
+  }
+
+  // New methods for Cloudflare bypass functionality
+  private isCloudflareProtectedSource(feedUrl: string): boolean {
+    const protectedSources = getCloudflareProtectedSources()
+    return protectedSources.some(source => source.url === feedUrl)
+  }
+
+  private detectCloudflareInHTML(html: string): boolean {
+    const cloudflareIndicators = [
+      'cf-browser-verification',
+      'cf-im-under-attack',
+      'cf-wrapper',
+      'cloudflare',
+      'Checking your browser before accessing',
+      'DDoS protection by Cloudflare'
+    ]
+    
+    return cloudflareIndicators.some(indicator => html.includes(indicator))
+  }
+
+  private async fetchRSSWithCloudflareBypass(feedUrl: string, sourceName?: string): Promise<NewsArticle[]> {
+    try {
+      const CloudflareScraper = await getCloudflareScraperModule()
+      if (!CloudflareScraper) {
+        console.warn('CloudflareScraper not available, skipping protected feed:', feedUrl)
+        return []
+      }
+      
+      const scrapeResult = await CloudflareScraper.scrapeUrl(feedUrl, {
+        timeout: 30000,
+        waitForSelector: 'rss, feed, item, entry'
+      })
+
+      if (!scrapeResult.success || !scrapeResult.content) {
+        console.error(`❌ Cloudflare bypass failed for RSS: ${feedUrl}`)
+        return []
+      }
+
+      // Parse the scraped RSS content
+      const feed = await parser.parseString(scrapeResult.content)
+      
+      return feed.items.map(item => ({
+        title: item.title || '',
+        description: item.contentSnippet || item.summary || '',
+        content: item.content || item.contentSnippet || '',
+        url: item.link || '',
+        publishedAt: item.pubDate || new Date().toISOString(),
+        source: {
+          name: sourceName || feed.title || 'RSS Feed (Cloudflare Bypass)',
+          url: feed.link || feedUrl,
+        },
+        author: item.creator || item.author,
+      }))
+    } catch (error) {
+      console.error(`❌ Error with Cloudflare bypass RSS parsing for ${feedUrl}:`, error)
+      return []
+    }
+  }
+
+  private async scrapeWithCloudflareBypass(url: string): Promise<string> {
+    try {
+      const CloudflareScraper = await getCloudflareScraperModule()
+      if (!CloudflareScraper) {
+        console.warn('CloudflareScraper not available, falling back to basic scraping')
+        return '' // Return empty content if scraper not available
+      }
+      
+      const scrapeResult = await CloudflareScraper.scrapeUrl(url, {
+        timeout: 30000,
+        waitForSelector: 'article, .article-body, .content, main'
+      })
+
+      if (!scrapeResult.success || !scrapeResult.content) {
+        console.error(`❌ Cloudflare bypass failed for article: ${url}`)
+        return ''
+      }
+
+      const $ = cheerio.load(scrapeResult.content)
+      
+      $('script, style, nav, header, footer, aside, .advertisement, .ad').remove()
+      
+      const contentSelectors = [
+        'article',
+        '[data-module="ArticleBody"]',
+        '.article-body',
+        '.story-body',
+        '.content',
+        '.post-content',
+        '.entry-content',
+        'main',
+        '.text-content',
+        '.article-content',
+        '.news-content'
+      ]
+
+      let content = ''
+      for (const selector of contentSelectors) {
+        const element = $(selector).first()
+        if (element.length) {
+          content = element.text().trim()
+          break
+        }
+      }
+
+      if (!content) {
+        content = $('body').text().trim()
+      }
+
+      return content.replace(/\s+/g, ' ').substring(0, 5000)
+    } catch (error) {
+      console.error(`❌ Error with Cloudflare bypass scraping for ${url}:`, error)
+      return ''
+    }
+  }
+
+  // Enhanced method to fetch from all comprehensive RSS sources
+  async fetchFromAllRSSSources(): Promise<NewsArticle[]> {
+    const activeSources = getActiveRSSSources()
+    const allArticles: NewsArticle[] = []
+    
+    console.log(`📡 Fetching from ${activeSources.length} RSS sources...`)
+    
+    // Process sources in batches to avoid overwhelming the system
+    const batchSize = 5
+    for (let i = 0; i < activeSources.length; i += batchSize) {
+      const batch = activeSources.slice(i, i + batchSize)
+      
+      const batchPromises = batch.map(async (source) => {
+        try {
+          const articles = await this.fetchFromRSS(source.url, source.name)
+          console.log(`✅ ${source.name}: ${articles.length} articles`)
+          return articles
+        } catch (error) {
+          console.error(`❌ Failed to fetch from ${source.name}:`, error)
+          return []
+        }
+      })
+      
+      const batchResults = await Promise.allSettled(batchPromises)
+      batchResults.forEach((result) => {
+        if (result.status === 'fulfilled') {
+          allArticles.push(...result.value)
+        }
+      })
+      
+      // Small delay between batches to be respectful
+      if (i + batchSize < activeSources.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+    }
+    
+    console.log(`📊 Total articles fetched: ${allArticles.length}`)
+    return allArticles
   }
 }
 

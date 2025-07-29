@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useLanguage } from '@/context/LanguageContext'
 
 interface ConflictStats {
   casualties: {
@@ -33,6 +34,7 @@ interface ConflictDashboardProps {
 }
 
 export default function ConflictDashboard({ className = '', isAdmin = false }: ConflictDashboardProps) {
+  const { t } = useLanguage()
   const [stats, setStats] = useState<ConflictStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [todaySummary, setTodaySummary] = useState<string>('')
@@ -87,9 +89,9 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
 
   const getRiskLevelText = (level: number) => {
     if (level >= 8) return 'Critical'
-    if (level >= 6) return 'High'
-    if (level >= 4) return 'Moderate'
-    return 'Low'
+    if (level >= 6) return t.high
+    if (level >= 4) return t.medium
+    return t.low
   }
 
   const getTensionColor = (level: number) => {
@@ -139,16 +141,16 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
       <div className="mb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Conflict Analytics Dashboard</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.dashboardTitle}</h2>
             <div className="flex items-center space-x-4 text-sm text-gray-600">
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>Real-time OpenAI Analysis</span>
+                <span>{t.realTimeAnalysis}</span>
               </div>
               <span>•</span>
-              <span>Last updated: {new Date(stats.status.lastUpdate).toLocaleString()}</span>
+              <span>{t.lastUpdated}: {new Date(stats.status.lastUpdate).toLocaleString()}</span>
               <span>•</span>
-              <span>Updates every 12 hours</span>
+              <span>{t.updatesEvery} 12 {t.hours}</span>
             </div>
           </div>
           {isAdmin && (
@@ -172,12 +174,12 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span>Update Now</span>
+                    <span>{t.updateNow}</span>
                   </div>
                 )}
               </button>
               <div className="text-xs text-gray-500 text-right">
-                <div>🤖 Powered by</div>
+                <div>🤖 {t.poweredBy}</div>
                 <div className="font-semibold">ChatGPT-4</div>
               </div>
             </div>
@@ -196,7 +198,7 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Casualties</p>
+              <p className="text-sm font-medium text-gray-600">{t.totalCasualties}</p>
               <p className="text-2xl font-semibold text-gray-900">{stats.casualties.total}</p>
               <div className="flex text-xs text-gray-500 mt-1">
                 <span>🇹🇭 {stats.casualties.thailand}</span>
@@ -216,10 +218,10 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Affected Population</p>
+              <p className="text-sm font-medium text-gray-600">{t.affectedPopulation}</p>
               <p className="text-2xl font-semibold text-gray-900">{stats.population.affected.toLocaleString()}</p>
               {stats.population.displaced > 0 && (
-                <p className="text-xs text-gray-500">{stats.population.displaced.toLocaleString()} displaced</p>
+                <p className="text-xs text-gray-500">{stats.population.displaced.toLocaleString()} {t.displaced}</p>
               )}
             </div>
           </div>
@@ -234,9 +236,9 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Weapon Types</p>
+              <p className="text-sm font-medium text-gray-600">{t.weaponTypes}</p>
               <p className="text-2xl font-semibold text-gray-900">{stats.weapons.typesReported}</p>
-              <p className="text-xs text-gray-500">types reported</p>
+              <p className="text-xs text-gray-500">{t.typesReported}</p>
             </div>
           </div>
         </div>
@@ -250,7 +252,7 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
               </svg>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Risk Level</p>
+              <p className="text-sm font-medium text-gray-600">{t.riskLevel}</p>
               <p className="text-2xl font-semibold text-gray-900">{stats.status.riskLevel}/10</p>
               <p className={`text-xs font-medium ${getRiskLevelColor(stats.status.riskLevel)}`}>
                 {getRiskLevelText(stats.status.riskLevel)}
@@ -266,7 +268,7 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Diplomatic Tension</p>
+              <p className="text-sm font-medium text-gray-600">{t.diplomaticTension}</p>
               <p className={`text-3xl font-bold ${getTensionColor(stats.status.diplomaticTension)}`}>
                 {stats.status.diplomaticTension}/10
               </p>
@@ -295,7 +297,7 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Border Status</p>
+              <p className="text-sm font-medium text-gray-600">{t.borderStatus}</p>
               <p className={`text-lg font-semibold px-3 py-1 rounded-full inline-block ${getBorderStatusColor(stats.status.borderStatus)}`}>
                 {stats.status.borderStatus || 'Unknown'}
               </p>
@@ -311,9 +313,9 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Affected Areas</p>
+              <p className="text-sm font-medium text-gray-600">{t.affectedAreas}</p>
               <p className="text-3xl font-bold text-gray-900">{stats.population.affectedAreas}</p>
-              <p className="text-xs text-gray-500">locations</p>
+              <p className="text-xs text-gray-500">{t.locations}</p>
             </div>
             <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -325,7 +327,7 @@ export default function ConflictDashboard({ className = '', isAdmin = false }: C
       {/* Today's Summary */}
       {todaySummary && (
         <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Daily Summary</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.summary}</h3>
           <div className="prose prose-sm max-w-none">
             <p className="text-gray-700 leading-relaxed whitespace-pre-line">
               {todaySummary}
