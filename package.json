@@ -1,6 +1,7 @@
 {
   "name": "news-ai-agent",
   "version": "0.1.0",
+  "description": "Thailand-Cambodia Conflict Monitor - Real-time AI-powered monitoring system",
   "private": true,
   "scripts": {
     "dev": "next dev",
