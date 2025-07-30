@@ -1,0 +1,14 @@
+# Railway ignore file
+node_modules
+.next
+.git
+.env.local
+*.log
+out/
+test-results/
+playwright-report/
+screenshots/
+.DS_Store
+dev.log
+server.log
+tsconfig.tsbuildinfo
